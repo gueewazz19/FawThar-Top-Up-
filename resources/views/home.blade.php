@@ -98,8 +98,8 @@
                                     <div class="text-xs font-bold text-slate-900 dark:text-white">86 Diamonds</div>
                                     <div class="text-xs text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">Rp 21.000</div>
                                 </div>
-                                <div class="p-3 rounded-xl bg-slate-100 dark:bg-[#0B101D] border border-emerald-500/40 text-left relative shadow-sm">
-                                    <span class="absolute -top-2 right-2 text-[9px] bg-emerald-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Populer</span>
+                                <div class="p-3 rounded-xl bg-slate-100 dark:bg-[#0B101D] border border-indigo-500/40 text-left relative shadow-sm">
+                                    <span class="absolute -top-2 right-2 text-[9px] bg-indigo-600 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Populer</span>
                                     <div class="text-xs font-bold text-slate-900 dark:text-white">172 Diamonds</div>
                                     <div class="text-xs text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">Rp 42.000</div>
                                 </div>

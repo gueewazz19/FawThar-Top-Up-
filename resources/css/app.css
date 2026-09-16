@@ -41,19 +41,19 @@
     @apply text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15 border-emerald-500/30 dark:border-emerald-500/40 shadow-sm dark:shadow-[0_0_18px_rgba(16,185,129,0.3)] font-semibold;
   }
 
-  /* Handcrafted, Non-AI Buttons */
+  /* Handcrafted, Non-AI Buttons (Eye-Friendly Royal Indigo Palette) */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide text-slate-950 bg-gradient-to-b from-[#10B981] to-[#059669] hover:from-[#34D399] hover:to-[#10B981] border border-emerald-300/40 shadow-[0_4px_16px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_24px_rgba(16,185,129,0.55)] active:translate-y-0.5 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 16px -2px rgba(16, 185, 129, 0.4);
+    @apply relative inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide text-white bg-gradient-to-b from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 dark:from-indigo-500 dark:to-indigo-600 dark:hover:from-indigo-400 dark:hover:to-indigo-500 border border-indigo-400/30 dark:border-indigo-300/30 shadow-[0_4px_14px_rgba(79,70,229,0.30)] hover:shadow-[0_6px_22px_rgba(79,70,229,0.45)] dark:shadow-[0_4px_20px_rgba(99,102,241,0.40)] dark:hover:shadow-[0_6px_28px_rgba(99,102,241,0.55)] active:translate-y-0.5 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px -2px rgba(79, 70, 229, 0.35);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-medium text-sm text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-[#121B2D]/90 dark:hover:bg-[#1A263E] border border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-white shadow-sm active:translate-y-0.5 transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-700 hover:text-slate-950 dark:text-slate-200 dark:hover:text-white bg-white hover:bg-slate-100 dark:bg-[#121B2D]/90 dark:hover:bg-[#1A263E] border border-slate-300 hover:border-slate-400 dark:border-slate-700/80 dark:hover:border-slate-500 shadow-sm active:translate-y-0.5 transition-all duration-200 cursor-pointer;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 border border-amber-200/60 shadow-[0_4px_16px_rgba(245,158,11,0.35)] hover:shadow-[0_6px_22px_rgba(245,158,11,0.5)] active:translate-y-0.5 transition-all duration-200 cursor-pointer;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 16px -2px rgba(245, 158, 11, 0.4);
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 border border-amber-300/40 shadow-[0_4px_14px_rgba(245,158,11,0.30)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.45)] active:translate-y-0.5 transition-all duration-200 cursor-pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 4px 14px -2px rgba(245, 158, 11, 0.35);
   }
 
   .btn-danger {
@@ -61,7 +61,7 @@
   }
 
   .form-input {
-    @apply w-full bg-white dark:bg-dark-bg border border-slate-300 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500 dark:focus:ring-emerald-400 transition-colors duration-150;
+    @apply w-full bg-white dark:bg-dark-bg border border-slate-300 dark:border-dark-border rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors duration-150;
   }
 
   .badge-status {
