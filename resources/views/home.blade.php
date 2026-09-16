@@ -59,8 +59,8 @@
                 </div>
             </div>
 
-            <!-- Right Hero Visual Card with Float Effect -->
-            <div class="lg:col-span-5 relative animate-fade-in-up anim-delay-200">
+            <!-- Right Hero Visual Card with Smooth Slide-In from Side & Float Effect -->
+            <div class="lg:col-span-5 relative animate-slide-in-right anim-delay-200">
                 <div class="relative mx-auto max-w-sm lg:max-w-none animate-float">
                     <!-- Glow behind card -->
                     <div class="absolute -inset-1.5 bg-gradient-to-r from-emerald-500/30 to-teal-500/20 rounded-3xl blur-xl opacity-60"></div>

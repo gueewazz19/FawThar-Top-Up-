@@ -34,7 +34,7 @@
         <!-- Navigation Menu -->
         <nav class="flex-grow p-4 space-y-1.5 overflow-y-auto">
             <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 py-2">Ringkasan</div>
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium {{ request()->routeIs('admin.dashboard*') ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
                 <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
@@ -42,19 +42,13 @@
             </a>
 
             <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 pb-1">Katalog & Produk</div>
-            <a href="{{ url('/admin/games') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
+            <a href="{{ route('admin.games.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.games*') ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
                 <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
                 </svg>
                 <span>Kelola Game</span>
             </a>
-            <a href="{{ url('/admin/categories') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
-                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                <span>Kategori</span>
-            </a>
-            <a href="{{ url('/admin/products') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
+            <a href="{{ route('admin.products.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.products*') ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
                 <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -62,34 +56,22 @@
             </a>
 
             <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 pb-1">Transaksi & Fulfillment</div>
-            <a href="{{ url('/admin/orders') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.orders*') ? 'bg-blue-500/15 text-blue-300 border border-blue-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
                 <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
                 <span>Semua Pesanan</span>
             </a>
-            <a href="{{ url('/admin/payments') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
-                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                <span>Riwayat Pembayaran</span>
-            </a>
-            <a href="{{ url('/admin/topups') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
-                <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span>Provider Top-Up Logs</span>
-            </a>
 
-            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 pb-1">Sistem & Audit</div>
-            <a href="{{ url('/admin/activity-logs') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 pb-1">Sistem & Keamanan</div>
+            <a href="{{ route('admin.activity-logs.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.activity-logs*') ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
                 <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                <span>Audit Log Aktivitas</span>
+                <span>Audit & WAF Shield</span>
             </a>
-            <a href="{{ url('/admin/settings') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-dark-card transition-colors">
-                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="{{ route('admin.settings.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.settings*') ? 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
