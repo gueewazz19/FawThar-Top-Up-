@@ -212,15 +212,12 @@
 
                     <!-- Top Up Action Button -->
                     <div class="p-4 pt-0">
-                        @auth
-                            <a href="{{ url('/topup/' . $game->slug) }}" class="btn-primary w-full py-2.5 text-xs">
-                                Top Up Sekarang
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="btn-primary w-full py-2.5 text-xs">
-                                Top Up Sekarang
-                            </a>
-                        @endauth
+                        <a href="{{ route('topup.show', $game->slug) }}" class="btn-primary w-full py-2.5 text-xs text-center flex items-center justify-center space-x-1">
+                            <span>Top Up Sekarang</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
             @empty
