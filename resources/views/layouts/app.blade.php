@@ -1,3 +1,14 @@
+@php
+    $siteName = \App\Models\Setting::get('site_name', 'GameTopUp');
+    $siteLogo = \App\Models\Setting::get('site_logo');
+    $supportWhatsapp = \App\Models\Setting::get('support_whatsapp', '+628123456789');
+    $supportPhone = \App\Models\Setting::get('support_phone', '0812-3456-7890');
+    $supportEmail = \App\Models\Setting::get('support_email', 'support@gametopup.test');
+    $socialInstagram = \App\Models\Setting::get('social_instagram', 'https://instagram.com');
+    $socialFacebook = \App\Models\Setting::get('social_facebook', 'https://facebook.com');
+    $socialTiktok = \App\Models\Setting::get('social_tiktok', 'https://tiktok.com');
+    $currentLocale = app()->getLocale();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
@@ -5,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'GameTopUp') }} - Top Up Game Cepat, Murah & Terpercaya</title>
+    <title>{{ $siteName }} - Top Up Game Cepat, Murah & Terpercaya</title>
     <meta name="description" content="Platform top up voucher dan game credits Mobile Legends, Free Fire, PUBG Mobile, Valorant, dan Genshin Impact resmi dan terpercaya.">
 
     <!-- Anti-Clickjacking & Frame protection fallback -->
@@ -51,14 +62,18 @@
                 <!-- Brand Logo -->
                 <div class="flex items-center space-x-3">
                     <a href="{{ route('home') }}" class="flex items-center space-x-3 group">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
+                        @if($siteLogo)
+                            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="w-11 h-11 rounded-xl object-contain shadow-md">
+                        @else
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                        @endif
                         <div class="flex flex-col">
-                            <span class="text-2xl font-black tracking-tight text-slate-900 dark:text-white font-['Outfit'] group-hover:text-emerald-500 transition-colors">
-                                Game<span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-cyan-500">TopUp</span>
+                            <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white font-['Outfit'] group-hover:text-emerald-500 transition-colors">
+                                {{ $siteName }}
                             </span>
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-widest uppercase -mt-1">Digital Game Store</span>
                         </div>
@@ -68,24 +83,31 @@
                 <!-- Navigation Links with ScrollSpy & Dynamic Green Active Pill -->
                 <nav id="navbar-links" class="hidden md:flex items-center p-1.5 rounded-2xl bg-slate-100/80 dark:bg-dark-surface/60 border border-slate-200 dark:border-dark-border/60 space-x-1">
                     <a href="{{ url('/#hero') }}" data-target="hero" class="nav-pill active">
-                        Beranda
+                        {{ __('Home') }}
                     </a>
                     <a href="{{ url('/#games') }}" data-target="games" class="nav-pill">
-                        Daftar Game
+                        {{ __('Game List') }}
                     </a>
                     <a href="{{ url('/#promo') }}" data-target="promo" class="nav-pill">
-                        Promo
+                        {{ __('Promo') }}
                     </a>
                     <a href="{{ url('/#how-it-works') }}" data-target="how-it-works" class="nav-pill">
-                        Cara Top Up
+                        {{ __('How to Top Up') }}
                     </a>
                     <a href="{{ url('/#faq') }}" data-target="faq" class="nav-pill">
-                        FAQ
+                        {{ __('FAQ') }}
                     </a>
                 </nav>
 
                 <!-- Auth, Theme Switcher & Mobile Actions -->
-                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                <div class="flex items-center space-x-2 sm:space-x-2.5">
+                    <!-- Language Switcher (ID / EN) -->
+                    <a href="{{ route('locale.switch', $currentLocale === 'id' ? 'en' : 'id') }}" 
+                        title="{{ $currentLocale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia' }}"
+                        class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-dark-surface dark:hover:bg-dark-hover border border-slate-300/80 dark:border-dark-border text-xs font-bold text-slate-700 dark:text-slate-200 transition-all hover:scale-105 active:scale-95 shadow-sm">
+                        <span>{{ $currentLocale === 'id' ? '🇮🇩 ID' : '🇬🇧 EN' }}</span>
+                    </a>
+
                     <!-- Dark / Light Mode Toggle Button -->
                     <button id="themeToggleBtn" type="button" aria-label="Ganti Tema Gelap / Terang" title="Ganti Mode Terang / Gelap"
                         class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-dark-surface dark:hover:bg-dark-hover border border-slate-300/80 dark:border-dark-border text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all hover:scale-105 active:scale-95 shadow-sm">
@@ -101,46 +123,45 @@
 
                     @auth
                         @if(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-600 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all">
+                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-600 dark:text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                <span class="hidden sm:inline">Admin Panel</span>
+                                <span class="hidden sm:inline">Admin</span>
                             </a>
                         @endif
 
-                        <div class="relative group">
-                            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 py-1.5 px-3 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border hover:border-emerald-500/40 transition-colors">
-                                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-xs font-extrabold text-slate-950">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                                </div>
-                                <div class="hidden sm:flex flex-col text-left">
-                                    <span class="text-xs font-semibold text-slate-900 dark:text-white leading-tight truncate max-w-[100px]">{{ auth()->user()->name }}</span>
-                                    <span class="text-[10px] text-slate-500 dark:text-slate-400 capitalize">{{ auth()->user()->role }}</span>
-                                </div>
-                            </a>
-                        </div>
+                        <!-- Customer Profile Link -->
+                        <a href="{{ route('profile.index') }}" title="{{ __('Profile') }}" class="flex items-center space-x-2 py-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border hover:border-emerald-500/40 transition-colors">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-xs font-black text-slate-950">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                            </div>
+                            <div class="hidden sm:flex flex-col text-left">
+                                <span class="text-xs font-semibold text-slate-900 dark:text-white leading-tight truncate max-w-[90px]">{{ auth()->user()->name }}</span>
+                                <span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">{{ auth()->user()->loyalty_tier['name'] ?? 'Bronze' }}</span>
+                            </div>
+                        </a>
 
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" title="Keluar" class="p-2.5 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-surface border border-transparent hover:border-slate-200 dark:hover:border-dark-border transition-colors">
+                            <button type="submit" title="{{ __('Logout') }}" class="p-2 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-surface border border-transparent hover:border-slate-200 dark:hover:border-dark-border transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="btn-secondary text-xs sm:text-sm">
-                            Masuk
+                        <a href="{{ route('login') }}" class="btn-secondary text-xs sm:text-sm py-2 px-3.5">
+                            {{ __('Login') }}
                         </a>
-                        <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm">
-                            Daftar
+                        <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm py-2 px-3.5">
+                            {{ __('Register') }}
                         </a>
                     @endauth
 
                     <!-- Mobile Menu Hamburger Button -->
-                    <button id="mobileMenuBtn" type="button" class="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-dark-surface border border-slate-200 dark:border-dark-border text-slate-700 dark:text-slate-300 hover:text-emerald-500" aria-label="Buka Menu Navigasi">
+                    <button id="mobileMenuBtn" type="button" class="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-dark-surface border border-slate-200 dark:border-dark-border text-slate-700 dark:text-slate-300 hover:text-emerald-500" aria-label="Buka Menu Navigasi">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -152,19 +173,19 @@
             <div id="mobileMenu" class="hidden md:hidden pb-4 pt-2 border-t border-slate-200 dark:border-dark-border/60">
                 <nav class="flex flex-col space-y-1">
                     <a href="{{ url('/#hero') }}" data-target="hero" class="nav-pill active text-left">
-                        Beranda
+                        {{ __('Home') }}
                     </a>
                     <a href="{{ url('/#games') }}" data-target="games" class="nav-pill text-left">
-                        Daftar Game
+                        {{ __('Game List') }}
                     </a>
                     <a href="{{ url('/#promo') }}" data-target="promo" class="nav-pill text-left">
-                        Promo
+                        {{ __('Promo') }}
                     </a>
                     <a href="{{ url('/#how-it-works') }}" data-target="how-it-works" class="nav-pill text-left">
-                        Cara Top Up
+                        {{ __('How to Top Up') }}
                     </a>
                     <a href="{{ url('/#faq') }}" data-target="faq" class="nav-pill text-left">
-                        FAQ
+                        {{ __('FAQ') }}
                     </a>
                 </nav>
             </div>
@@ -222,11 +243,15 @@
                 <!-- Brand Info -->
                 <div class="md:col-span-2 space-y-4">
                     <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 font-black">
-                            GT
-                        </div>
+                        @if($siteLogo)
+                            <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="w-10 h-10 rounded-xl object-contain shadow-md">
+                        @else
+                            <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 font-black">
+                                {{ strtoupper(substr($siteName, 0, 2)) }}
+                            </div>
+                        @endif
                         <span class="text-2xl font-black text-slate-900 dark:text-white font-['Outfit']">
-                            Game<span class="text-emerald-500 dark:text-emerald-400">TopUp</span>
+                            {{ $siteName }}
                         </span>
                     </div>
                     <p class="text-slate-600 dark:text-slate-400 text-sm max-w-md leading-relaxed">
@@ -248,7 +273,7 @@
                         </div>
                         <div class="flex items-center space-x-3">
                             <!-- Instagram -->
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram GameTopUp" title="Ikuti Instagram Resmi"
+                            <a href="{{ $socialInstagram ?: 'https://instagram.com' }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram {{ $siteName }}" title="Ikuti Instagram Resmi"
                                 class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 hover:border-transparent hover:shadow-lg hover:shadow-rose-500/25 transition-all hover:scale-110 active:scale-95 group">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -256,7 +281,7 @@
                             </a>
 
                             <!-- Facebook -->
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook GameTopUp" title="Ikuti Facebook Resmi"
+                            <a href="{{ $socialFacebook ?: 'https://facebook.com' }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook {{ $siteName }}" title="Ikuti Facebook Resmi"
                                 class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white hover:bg-[#1877F2] hover:border-transparent hover:shadow-lg hover:shadow-blue-500/25 transition-all hover:scale-110 active:scale-95 group">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -264,7 +289,7 @@
                             </a>
 
                             <!-- TikTok -->
-                            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok GameTopUp" title="Ikuti TikTok Resmi"
+                            <a href="{{ $socialTiktok ?: 'https://tiktok.com' }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok {{ $siteName }}" title="Ikuti TikTok Resmi"
                                 class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-white hover:bg-black dark:hover:bg-slate-900 hover:border-transparent hover:shadow-lg hover:shadow-cyan-500/20 transition-all hover:scale-110 active:scale-95 group">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z"/>
@@ -278,10 +303,10 @@
                 <div>
                     <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 font-['Outfit']">Navigasi Cepat</h4>
                     <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                        <li><a href="{{ url('/#games') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Semua Game</a></li>
-                        <li><a href="{{ url('/#promo') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Promo & Diskon</a></li>
-                        <li><a href="{{ url('/#how-it-works') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Panduan Top Up</a></li>
-                        <li><a href="{{ url('/#faq') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Pertanyaan Umum (FAQ)</a></li>
+                        <li><a href="{{ url('/#games') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">{{ __('Game List') }}</a></li>
+                        <li><a href="{{ url('/#promo') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">{{ __('Promo') }}</a></li>
+                        <li><a href="{{ url('/#how-it-works') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">{{ __('How to Top Up') }}</a></li>
+                        <li><a href="{{ url('/#faq') }}" class="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">{{ __('FAQ') }}</a></li>
                     </ul>
                 </div>
 
@@ -289,15 +314,18 @@
                 <div>
                     <h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 font-['Outfit']">Bantuan & Kontak</h4>
                     <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                        <li>Email: <span class="text-slate-800 dark:text-slate-300">support@gametopup.test</span></li>
-                        <li>WhatsApp: <span class="text-slate-800 dark:text-slate-300">+62 812-3456-7890</span></li>
+                        <li>Email: <a href="mailto:{{ $supportEmail }}" class="text-slate-800 dark:text-slate-300 hover:text-emerald-500 transition-colors">{{ $supportEmail }}</a></li>
+                        <li>WhatsApp: <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $supportWhatsapp) }}" target="_blank" rel="noopener noreferrer" class="text-slate-800 dark:text-slate-300 hover:text-emerald-500 transition-colors">{{ $supportWhatsapp }}</a></li>
+                        @if($supportPhone)
+                            <li>Telepon: <a href="tel:{{ preg_replace('/[^0-9+]/', '', $supportPhone) }}" class="text-slate-800 dark:text-slate-300 hover:text-emerald-500 transition-colors">{{ $supportPhone }}</a></li>
+                        @endif
                         <li>Jam Operasional: <span class="text-emerald-600 dark:text-emerald-400 font-medium">24/7 Nonstop</span></li>
                     </ul>
                 </div>
             </div>
 
             <div class="border-t border-slate-200 dark:border-dark-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
-                <p>&copy; {{ date('Y') }} GameTopUp. Seluruh hak cipta dilindungi undang-undang.</p>
+                <p>&copy; {{ date('Y') }} {{ $siteName }}. {{ __('All rights reserved.') }}</p>
                 <p class="mt-2 sm:mt-0">Semua logo dan merek dagang game merupakan properti dari masing-masing penerbit resmi.</p>
             </div>
         </div>

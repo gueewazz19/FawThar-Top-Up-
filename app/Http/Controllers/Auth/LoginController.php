@@ -32,6 +32,10 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+            $user->update([
+                'last_login_at' => now(),
+                'last_login_ip' => $request->ip(),
+            ]);
 
             if ($user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'))->with('success', 'Selamat datang kembali, Administrator ' . $user->name);

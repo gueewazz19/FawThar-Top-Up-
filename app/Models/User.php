@@ -18,6 +18,8 @@ class User extends Authenticatable
         'phone',
         'role',
         'password',
+        'last_login_at',
+        'last_login_ip',
     ];
 
     protected $hidden = [
@@ -27,8 +29,24 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getLoyaltyTierAttribute(): array
+    {
+        $ordersCount = $this->orders()->where('status', \App\Enums\OrderStatus::SUCCESS)->count();
+
+        if ($ordersCount >= 30) {
+            return ['name' => 'Diamond Legend', 'badge' => 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30', 'icon' => '💎'];
+        } elseif ($ordersCount >= 15) {
+            return ['name' => 'Gold Pro', 'badge' => 'bg-amber-500/15 text-amber-400 border-amber-500/30', 'icon' => '👑'];
+        } elseif ($ordersCount >= 5) {
+            return ['name' => 'Silver Gamer', 'badge' => 'bg-slate-400/15 text-slate-300 border-slate-400/30', 'icon' => '⭐'];
+        } else {
+            return ['name' => 'Bronze Rookie', 'badge' => 'bg-orange-500/15 text-orange-400 border-orange-500/30', 'icon' => '🥉'];
+        }
+    }
 
     public function isAdmin(): bool
     {

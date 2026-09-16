@@ -23,6 +23,8 @@ Route::get('/topup/{slug}', [TopUpController::class, 'show'])->name('topup.show'
 Route::post('/topup/{slug}/order', [TopUpController::class, 'checkout'])->middleware('throttle:30,1')->name('topup.checkout');
 Route::get('/order/{order_number}', [TopUpController::class, 'invoice'])->name('topup.invoice');
 Route::post('/order/{order_number}/simulate-pay', [TopUpController::class, 'simulatePay'])->name('topup.simulate_pay');
+Route::get('/locale/{lang}', [\App\Http\Controllers\LocaleController::class, 'switch'])->name('locale.switch');
+
 
 
 /*
@@ -40,11 +42,19 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
+use App\Http\Controllers\Customer\ProfileController;
+
 /*
 |--------------------------------------------------------------------------
-| Customer Portal (Role: user)
+| Authenticated User Profile & Portal
 |--------------------------------------------------------------------------
 */
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+});
+
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
 });
@@ -76,6 +86,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Activity Logs & WAF Defense Monitoring
     Route::get('/activity-logs', [AdminActivityLogController::class, 'index'])->name('activity-logs.index');
+
+    // Users Management
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/toggle-role', [\App\Http\Controllers\Admin\UserController::class, 'toggleRole'])->name('users.toggle_role');
+    Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 
     // Site Settings
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');

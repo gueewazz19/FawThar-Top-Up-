@@ -1,3 +1,8 @@
+@php
+    $siteName = \App\Models\Setting::get('site_name', 'GameTopUp');
+    $siteLogo = \App\Models\Setting::get('site_logo');
+    $currentLocale = app()->getLocale();
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
@@ -5,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Admin Control Center - {{ config('app.name', 'GameTopUp') }}</title>
+    <title>Admin Control Center - {{ $siteName }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,12 +26,16 @@
         <!-- Brand Header -->
         <div class="h-20 flex items-center px-6 border-b border-dark-border">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold shadow-md shadow-amber-500/20">
-                    AD
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-lg font-black text-white font-['Outfit']">Admin Panel</span>
-                    <span class="text-[10px] text-amber-400 font-semibold tracking-wider uppercase">GameTopUp Ops</span>
+                @if($siteLogo)
+                    <img src="{{ $siteLogo }}" alt="{{ $siteName }}" class="w-10 h-10 rounded-xl object-contain shadow-md">
+                @else
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold shadow-md shadow-amber-500/20">
+                        AD
+                    </div>
+                @endif
+                <div class="flex flex-col truncate">
+                    <span class="text-base font-black text-white font-['Outfit'] truncate">{{ $siteName }}</span>
+                    <span class="text-[10px] text-amber-400 font-semibold tracking-wider uppercase">Admin Panel</span>
                 </div>
             </a>
         </div>
@@ -64,6 +73,12 @@
             </a>
 
             <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 pt-4 pb-1">Sistem & Keamanan</div>
+            <a href="{{ route('admin.users.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.users*') ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span>Kelola Pengguna</span>
+            </a>
             <a href="{{ route('admin.activity-logs.index') }}" class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-sm font-medium {{ request()->routeIs('admin.activity-logs*') ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold' : 'text-slate-400 hover:text-white hover:bg-dark-card' }} transition-colors">
                 <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -118,7 +133,13 @@
             <div class="flex items-center space-x-4">
                 <h2 class="text-xl font-bold text-white font-['Outfit']">@yield('page_title', 'Dashboard')</h2>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3">
+                <!-- Language Switcher in Admin -->
+                <a href="{{ route('locale.switch', $currentLocale === 'id' ? 'en' : 'id') }}" 
+                   title="{{ $currentLocale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia' }}"
+                   class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-dark-card border border-dark-border text-xs font-bold text-slate-300 hover:text-white hover:border-slate-600 transition-all">
+                    <span>{{ $currentLocale === 'id' ? '🇮🇩 ID' : '🇬🇧 EN' }}</span>
+                </a>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                     ● Server Aktif
                 </span>
