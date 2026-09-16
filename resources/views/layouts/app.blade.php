@@ -16,12 +16,12 @@
     <!-- Scripts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#0B0F19] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
-    <!-- Ambient Background Lighting -->
+<body class="bg-[#080C14] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950">
+    <!-- Ambient Background Lighting with Slow Pulse -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
     </div>
 
     <!-- Header / Navbar -->
@@ -31,55 +31,55 @@
                 <!-- Brand Logo -->
                 <div class="flex items-center space-x-3">
                     <a href="{{ route('home') }}" class="flex items-center space-x-3 group">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6 text-slate-950 font-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-2xl font-black tracking-tight text-white font-['Outfit'] group-hover:text-brand-400 transition-colors">
-                                Game<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-indigo-400">TopUp</span>
+                            <span class="text-2xl font-black tracking-tight text-white font-['Outfit'] group-hover:text-emerald-400 transition-colors">
+                                Game<span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">TopUp</span>
                             </span>
-                            <span class="text-[10px] text-slate-400 font-medium tracking-widest uppercase -mt-1">Digital Game Store</span>
+                            <span class="text-[10px] text-slate-400 font-semibold tracking-widest uppercase -mt-1">Digital Game Store</span>
                         </div>
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
-                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
-                    <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('home') ? 'text-brand-400 bg-dark-card' : 'text-slate-300 hover:text-white hover:bg-dark-surface' }} transition-colors">
+                <!-- Navigation Links with ScrollSpy & Dynamic Green Active Pill -->
+                <nav id="navbar-links" class="hidden md:flex items-center p-1.5 rounded-2xl bg-dark-surface/60 border border-dark-border/60 space-x-1">
+                    <a href="{{ url('/#hero') }}" data-target="hero" class="nav-pill active">
                         Beranda
                     </a>
-                    <a href="{{ url('/#games') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                    <a href="{{ url('/#games') }}" data-target="games" class="nav-pill">
                         Daftar Game
                     </a>
-                    <a href="{{ url('/#promo') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                    <a href="{{ url('/#promo') }}" data-target="promo" class="nav-pill">
                         Promo
                     </a>
-                    <a href="{{ url('/#how-it-works') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                    <a href="{{ url('/#how-it-works') }}" data-target="how-it-works" class="nav-pill">
                         Cara Top Up
                     </a>
-                    <a href="{{ url('/#faq') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                    <a href="{{ url('/#faq') }}" data-target="faq" class="nav-pill">
                         FAQ
                     </a>
                 </nav>
 
-                <!-- Auth / User Actions -->
+                <!-- Auth / User Actions & Mobile Hamburger -->
                 <div class="flex items-center space-x-3">
                     @auth
                         @if(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all">
+                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                <span>Admin Panel</span>
+                                <span class="hidden sm:inline">Admin Panel</span>
                             </a>
                         @endif
 
                         <div class="relative group">
-                            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 py-1.5 px-3 rounded-xl bg-dark-card border border-dark-border hover:border-slate-600 transition-colors">
-                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+                            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 py-1.5 px-3 rounded-xl bg-dark-card border border-dark-border hover:border-emerald-500/40 transition-colors">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-xs font-extrabold text-slate-950">
                                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                                 </div>
                                 <div class="hidden sm:flex flex-col text-left">
@@ -105,7 +105,35 @@
                             Daftar
                         </a>
                     @endauth
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button id="mobileMenuBtn" type="button" class="md:hidden p-2.5 rounded-xl bg-dark-surface border border-dark-border text-slate-300 hover:text-white" aria-label="Buka Menu Navigasi">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Mobile Navigation Drawer -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4 pt-2 border-t border-dark-border/60">
+                <nav class="flex flex-col space-y-1">
+                    <a href="{{ url('/#hero') }}" data-target="hero" class="nav-pill active text-left">
+                        Beranda
+                    </a>
+                    <a href="{{ url('/#games') }}" data-target="games" class="nav-pill text-left">
+                        Daftar Game
+                    </a>
+                    <a href="{{ url('/#promo') }}" data-target="promo" class="nav-pill text-left">
+                        Promo
+                    </a>
+                    <a href="{{ url('/#how-it-works') }}" data-target="how-it-works" class="nav-pill text-left">
+                        Cara Top Up
+                    </a>
+                    <a href="{{ url('/#faq') }}" data-target="faq" class="nav-pill text-left">
+                        FAQ
+                    </a>
+                </nav>
             </div>
         </div>
     </header>
@@ -161,11 +189,11 @@
                 <!-- Brand Info -->
                 <div class="md:col-span-2 space-y-4">
                     <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white font-black">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 font-black">
                             GT
                         </div>
                         <span class="text-2xl font-black text-white font-['Outfit']">
-                            Game<span class="text-brand-400">TopUp</span>
+                            Game<span class="text-emerald-400">TopUp</span>
                         </span>
                     </div>
                     <p class="text-slate-400 text-sm max-w-md leading-relaxed">
@@ -185,10 +213,10 @@
                 <div>
                     <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4 font-['Outfit']">Navigasi Cepat</h4>
                     <ul class="space-y-2 text-sm text-slate-400">
-                        <li><a href="{{ route('home') }}" class="hover:text-brand-400 transition-colors">Semua Game</a></li>
-                        <li><a href="{{ url('/#promo') }}" class="hover:text-brand-400 transition-colors">Promo & Diskon</a></li>
-                        <li><a href="{{ url('/#how-it-works') }}" class="hover:text-brand-400 transition-colors">Panduan Top Up</a></li>
-                        <li><a href="{{ url('/#faq') }}" class="hover:text-brand-400 transition-colors">Pertanyaan Umum (FAQ)</a></li>
+                        <li><a href="{{ url('/#games') }}" class="hover:text-emerald-400 transition-colors">Semua Game</a></li>
+                        <li><a href="{{ url('/#promo') }}" class="hover:text-emerald-400 transition-colors">Promo & Diskon</a></li>
+                        <li><a href="{{ url('/#how-it-works') }}" class="hover:text-emerald-400 transition-colors">Panduan Top Up</a></li>
+                        <li><a href="{{ url('/#faq') }}" class="hover:text-emerald-400 transition-colors">Pertanyaan Umum (FAQ)</a></li>
                     </ul>
                 </div>
 
@@ -209,5 +237,101 @@
             </div>
         </div>
     </footer>
+
+    <!-- Interactive ScrollSpy & Mobile Navigation Controller -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-pill');
+            const sectionIds = ['hero', 'games', 'promo', 'how-it-works', 'faq'];
+            const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+            let isManualScroll = false;
+            let scrollTimer = null;
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            function setActive(targetId) {
+                navLinks.forEach(link => {
+                    if (link.getAttribute('data-target') === targetId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            // Click listener on nav links: immediate active pill update + smooth scroll
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const targetId = link.getAttribute('data-target');
+                    const targetEl = document.getElementById(targetId);
+                    
+                    if (targetEl) {
+                        e.preventDefault();
+                        setActive(targetId);
+                        isManualScroll = true;
+                        clearTimeout(scrollTimer);
+
+                        const headerHeight = 85;
+                        const elementPosition = targetEl.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerHeight;
+
+                        window.scrollTo({
+                            top: Math.max(0, offsetPosition),
+                            behavior: 'smooth'
+                        });
+
+                        // Release lock after smooth scroll completes
+                        scrollTimer = setTimeout(() => {
+                            isManualScroll = false;
+                        }, 800);
+
+                        // Close mobile drawer if open
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+
+            // Scroll listener: update the green pill according to which section is currently in view
+            function handleScroll() {
+                if (isManualScroll) return;
+
+                const scrollY = window.pageYOffset;
+                const headerOffset = 130;
+                let currentSectionId = 'hero';
+
+                for (let i = 0; i < sections.length; i++) {
+                    const section = sections[i];
+                    const top = section.offsetTop - headerOffset;
+                    const height = section.offsetHeight;
+
+                    if (scrollY >= top && scrollY < top + height) {
+                        currentSectionId = section.id;
+                        break;
+                    }
+                }
+
+                // If scrolled near bottom of page, highlight the last section (e.g. FAQ)
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 80) {
+                    if (sections.length > 0) {
+                        currentSectionId = sections[sections.length - 1].id;
+                    }
+                }
+
+                setActive(currentSectionId);
+            }
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll(); // Trigger immediately on initial load
+        });
+    </script>
 </body>
 </html>

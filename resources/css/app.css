@@ -5,8 +5,12 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-[#0B0F19] text-slate-100 font-sans antialiased selection:bg-brand-500 selection:text-white min-h-screen;
+    @apply bg-[#080C14] text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-slate-950 min-h-screen;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -15,36 +19,49 @@
 }
 
 @layer components {
+  /* Cards */
   .glass-card {
     @apply bg-dark-surface/90 backdrop-blur-md border border-dark-border/80 rounded-2xl shadow-xl transition-all duration-200;
   }
 
   .glass-card-hover {
-    @apply hover:border-brand-500/50 hover:shadow-glow-cyan hover:-translate-y-1 transition-all duration-300;
+    @apply hover:border-emerald-500/40 hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] hover:-translate-y-1 transition-all duration-300;
   }
 
   .glass-nav {
-    @apply bg-dark-bg/85 backdrop-blur-lg border-b border-dark-border/70 sticky top-0 z-50;
+    @apply bg-dark-bg/90 backdrop-blur-xl border-b border-dark-border/80 sticky top-0 z-50 transition-all duration-300;
   }
 
+  /* Nav Links with Dynamic Green Active Indicator */
+  .nav-pill {
+    @apply relative px-3.5 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface/60 border border-transparent transition-all duration-200;
+  }
+
+  .nav-pill.active {
+    @apply text-emerald-400 bg-emerald-500/15 border-emerald-500/40 shadow-[0_0_18px_rgba(16,185,129,0.3)] font-semibold;
+  }
+
+  /* Handcrafted, Non-AI Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-brand-600 via-cyan-500 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 active:scale-95 shadow-md shadow-brand-500/20 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply relative inline-flex items-center justify-center px-6 py-2.5 rounded-xl font-bold text-sm tracking-wide text-slate-950 bg-gradient-to-b from-[#10B981] to-[#059669] hover:from-[#34D399] hover:to-[#10B981] border border-emerald-300/40 shadow-[0_4px_16px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_24px_rgba(16,185,129,0.55)] active:translate-y-0.5 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 16px -2px rgba(16, 185, 129, 0.4);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-medium text-sm text-slate-200 bg-dark-surface hover:bg-dark-hover border border-dark-border hover:border-slate-600 active:scale-95 transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-medium text-sm text-slate-200 bg-[#121B2D]/90 hover:bg-[#1A263E] border border-slate-700/80 hover:border-slate-500 hover:text-white shadow-sm active:translate-y-0.5 transition-all duration-200 cursor-pointer;
   }
 
   .btn-accent {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 shadow-md shadow-amber-500/20 active:scale-95 transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 border border-amber-200/60 shadow-[0_4px_16px_rgba(245,158,11,0.35)] hover:shadow-[0_6px_22px_rgba(245,158,11,0.5)] active:translate-y-0.5 transition-all duration-200 cursor-pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 4px 16px -2px rgba(245, 158, 11, 0.4);
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-medium text-sm text-white bg-rose-600 hover:bg-rose-500 active:scale-95 transition-all duration-200 cursor-pointer;
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-xl font-medium text-sm text-white bg-rose-600 hover:bg-rose-500 active:translate-y-0.5 shadow-md shadow-rose-600/20 transition-all duration-200 cursor-pointer;
   }
 
   .form-input {
-    @apply w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400 transition-colors duration-150;
+    @apply w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-colors duration-150;
   }
 
   .badge-status {
@@ -52,18 +69,25 @@
   }
 }
 
+/* Stagger Animation Delays */
+.anim-delay-100 { animation-delay: 100ms; }
+.anim-delay-200 { animation-delay: 200ms; }
+.anim-delay-300 { animation-delay: 300ms; }
+.anim-delay-400 { animation-delay: 400ms; }
+.anim-delay-500 { animation-delay: 500ms; }
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #080c14;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #1f2e4a;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #334a75;
 }

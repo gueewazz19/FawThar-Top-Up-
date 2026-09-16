@@ -23,37 +23,58 @@ export default {
           950: '#083344',
         },
         dark: {
-          bg: '#0B0F19',
-          surface: '#111827',
-          card: '#182234',
-          border: '#233044',
-          hover: '#1e293b',
+          bg: '#080C14',
+          surface: '#0F1626',
+          card: '#141E34',
+          border: '#1F2E4A',
+          hover: '#1B2844',
         },
-        accent: {
-          purple: '#8b5cf6',
-          indigo: '#6366f1',
-          cyan: '#06b6d4',
-          pink: '#ec4899',
-          amber: '#f59e0b',
-          emerald: '#10b981',
-          rose: '#f43f5e',
+        neon: {
+          emerald: '#10B981',
+          cyan: '#06B6D4',
+          amber: '#F59E0B',
+          purple: '#8B5CF6',
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['Outfit', 'Inter', 'sans-serif'],
+      },
+      keyframes: {
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(24px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        pulseSlow: {
+          '0%, 100%': { opacity: '0.15', transform: 'scale(1)' },
+          '50%': { opacity: '0.3', transform: 'scale(1.08)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        }
+      },
+      animation: {
+        'fade-in-up': 'fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-in': 'fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'float': 'float 5s ease-in-out infinite',
+        'pulse-slow': 'pulseSlow 7s ease-in-out infinite',
+        'shimmer': 'shimmer 2.5s infinite',
       },
       boxShadow: {
-        'glow-cyan': '0 0 25px -5px rgba(6, 182, 212, 0.4)',
-        'glow-indigo': '0 0 25px -5px rgba(99, 102, 241, 0.4)',
-        'glow-purple': '0 0 25px -5px rgba(139, 92, 246, 0.4)',
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-pattern': "radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 40%), radial-gradient(circle at top left, rgba(6, 182, 212, 0.15), transparent 40%)",
+        'glow-emerald': '0 0 20px -3px rgba(16, 185, 129, 0.45)',
+        'glow-cyan': '0 0 20px -3px rgba(6, 182, 212, 0.45)',
+        'glow-amber': '0 0 20px -3px rgba(245, 158, 11, 0.45)',
       }
     },
   },
-  plugins: [
-    // will require forms
-  ],
+  plugins: [],
 }
