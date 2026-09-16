@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'GameTopUp') }} - Top Up Game Cepat, Murah & Terpercaya</title>
+    <meta name="description" content="Platform top up voucher dan game credits Mobile Legends, Free Fire, PUBG Mobile, Valorant, dan Genshin Impact resmi dan terpercaya.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Scripts and Styles -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-[#0B0F19] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+    <!-- Ambient Background Lighting -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3">
+                    <a href="{{ route('home') }}" class="flex items-center space-x-3 group">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-2xl font-black tracking-tight text-white font-['Outfit'] group-hover:text-brand-400 transition-colors">
+                                Game<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-indigo-400">TopUp</span>
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-medium tracking-widest uppercase -mt-1">Digital Game Store</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('home') ? 'text-brand-400 bg-dark-card' : 'text-slate-300 hover:text-white hover:bg-dark-surface' }} transition-colors">
+                        Beranda
+                    </a>
+                    <a href="{{ url('/#games') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                        Daftar Game
+                    </a>
+                    <a href="{{ url('/#promo') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                        Promo
+                    </a>
+                    <a href="{{ url('/#how-it-works') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                        Cara Top Up
+                    </a>
+                    <a href="{{ url('/#faq') }}" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-dark-surface transition-colors">
+                        FAQ
+                    </a>
+                </nav>
+
+                <!-- Auth / User Actions -->
+                <div class="flex items-center space-x-3">
+                    @auth
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>Admin Panel</span>
+                            </a>
+                        @endif
+
+                        <div class="relative group">
+                            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2.5 py-1.5 px-3 rounded-xl bg-dark-card border border-dark-border hover:border-slate-600 transition-colors">
+                                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                </div>
+                                <div class="hidden sm:flex flex-col text-left">
+                                    <span class="text-xs font-semibold text-white leading-tight truncate max-w-[100px]">{{ auth()->user()->name }}</span>
+                                    <span class="text-[10px] text-slate-400 capitalize">{{ auth()->user()->role }}</span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" title="Keluar" class="p-2.5 text-slate-400 hover:text-rose-400 rounded-xl hover:bg-dark-surface border border-transparent hover:border-dark-border transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-secondary text-xs sm:text-sm">
+                            Masuk
+                        </a>
+                        <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm">
+                            Daftar
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash Notifications -->
+    @if(session('success') || session('error') || session('info') || $errors->any())
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 relative z-10">
+            @if(session('success'))
+                <div class="bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 px-4 py-3 rounded-xl flex items-center space-x-3 shadow-lg mb-4">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-sm font-medium">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-rose-950/80 border border-rose-500/40 text-rose-200 px-4 py-3 rounded-xl flex items-center space-x-3 shadow-lg mb-4">
+                    <svg class="w-5 h-5 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-sm font-medium">{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="bg-rose-950/80 border border-rose-500/40 text-rose-200 px-4 py-3 rounded-xl shadow-lg mb-4">
+                    <div class="flex items-center space-x-2 font-semibold text-sm mb-1 text-rose-300">
+                        <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>Mohon periksa kembali input Anda:</span>
+                    </div>
+                    <ul class="list-disc list-inside text-xs space-y-0.5 text-rose-300">
+                        @foreach($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+    @endif
+
+    <!-- Main Body Content -->
+    <main class="flex-grow relative z-10">
+        @yield('content')
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-surface/90 border-t border-dark-border mt-20 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand Info -->
+                <div class="md:col-span-2 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white font-black">
+                            GT
+                        </div>
+                        <span class="text-2xl font-black text-white font-['Outfit']">
+                            Game<span class="text-brand-400">TopUp</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm max-w-md leading-relaxed">
+                        Platform top up voucher dan game online terpercaya di Indonesia. Dapatkan pengisian instan otomatis 24 jam dengan berbagai metode pembayaran aman dan harga kompetitif.
+                    </p>
+                    <div class="flex items-center space-x-4 pt-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                            ● Sistem Otomatis 24 Jam
+                        </span>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                            🛡️ 100% Legal & Aman
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Navigation Quick Links -->
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4 font-['Outfit']">Navigasi Cepat</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="{{ route('home') }}" class="hover:text-brand-400 transition-colors">Semua Game</a></li>
+                        <li><a href="{{ url('/#promo') }}" class="hover:text-brand-400 transition-colors">Promo & Diskon</a></li>
+                        <li><a href="{{ url('/#how-it-works') }}" class="hover:text-brand-400 transition-colors">Panduan Top Up</a></li>
+                        <li><a href="{{ url('/#faq') }}" class="hover:text-brand-400 transition-colors">Pertanyaan Umum (FAQ)</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Care & Security -->
+                <div>
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-4 font-['Outfit']">Bantuan & Kontak</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li>Email: <span class="text-slate-300">support@gametopup.test</span></li>
+                        <li>WhatsApp: <span class="text-slate-300">+62 812-3456-7890</span></li>
+                        <li>Jam Operasional: <span class="text-emerald-400 font-medium">24/7 Nonstop</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-dark-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+                <p>&copy; {{ date('Y') }} GameTopUp. Seluruh hak cipta dilindungi undang-undang.</p>
+                <p class="mt-2 sm:mt-0">Semua logo dan merek dagang game merupakan properti dari masing-masing penerbit resmi.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
