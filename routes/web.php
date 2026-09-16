@@ -21,10 +21,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 */
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+    Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.submit');
 
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
+    Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:register')->name('register.submit');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
