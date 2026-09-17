@@ -22,6 +22,18 @@
                 <p class="text-xs text-slate-400 mt-0.5">Dibuat pada {{ $order->created_at->translatedFormat('d F Y, H:i:s') }} WIB</p>
             </div>
         </div>
+        <div>
+            <form method="POST" action="{{ route('admin.orders.destroy', $order) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan {{ $order->order_number }} secara permanen?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 border border-rose-500/30 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Hapus Pesanan</span>
+                </button>
+            </form>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

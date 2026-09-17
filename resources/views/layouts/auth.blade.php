@@ -68,7 +68,7 @@
                             {{ $siteName }}
                         </span>
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wider uppercase -mt-1">
-                            {{ __('Authentication Center') }}
+                            Pusat Autentikasi Pengguna
                         </span>
                     </div>
                 </a>
@@ -83,13 +83,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                     <span>Butuh Bantuan?</span>
-                </a>
-
-                <!-- Language Switcher -->
-                <a href="{{ route('locale.switch', $currentLocale === 'id' ? 'en' : 'id') }}" 
-                    title="{{ $currentLocale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia' }}"
-                    class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-dark-surface dark:hover:bg-dark-hover border border-slate-300/80 dark:border-dark-border text-xs font-bold text-slate-700 dark:text-slate-200 transition-all shadow-sm">
-                    <span>{{ $currentLocale === 'id' ? '🇮🇩 ID' : '🇬🇧 EN' }}</span>
                 </a>
 
                 <!-- Dark / Light Mode Toggle Button -->

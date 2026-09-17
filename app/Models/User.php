@@ -16,11 +16,26 @@ class User extends Authenticatable
         'name',
         'email',
         'phone',
+        'avatar',
+        'provider',
+        'provider_id',
         'role',
         'password',
         'last_login_at',
         'last_login_ip',
     ];
+
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            if (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://')) {
+                return $this->avatar;
+            }
+            return asset($this->avatar);
+        }
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0D8ABC&color=fff&bold=true';
+    }
 
     protected $hidden = [
         'password',

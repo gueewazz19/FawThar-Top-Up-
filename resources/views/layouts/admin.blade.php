@@ -98,9 +98,7 @@
         <div class="p-4 border-t border-dark-border bg-[#0a101d]">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3 truncate">
-                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center text-xs border border-amber-500/30">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'AD', 0, 2)) }}
-                    </div>
+                    <img src="{{ auth()->user()->avatar_url ?? 'https://ui-avatars.com/api/?name=Admin' }}" alt="{{ auth()->user()->name ?? 'Admin' }}" class="w-9 h-9 rounded-xl object-cover border border-amber-500/30 flex-shrink-0 bg-slate-800">
                     <div class="flex flex-col truncate">
                         <span class="text-xs font-semibold text-white truncate">{{ auth()->user()->name ?? 'Admin' }}</span>
                         <span class="text-[10px] text-amber-400 font-medium">Administrator</span>
@@ -134,12 +132,6 @@
                 <h2 class="text-xl font-bold text-white font-['Outfit']">@yield('page_title', 'Dashboard')</h2>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- Language Switcher in Admin -->
-                <a href="{{ route('locale.switch', $currentLocale === 'id' ? 'en' : 'id') }}" 
-                   title="{{ $currentLocale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia' }}"
-                   class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-dark-card border border-dark-border text-xs font-bold text-slate-300 hover:text-white hover:border-slate-600 transition-all">
-                    <span>{{ $currentLocale === 'id' ? '🇮🇩 ID' : '🇬🇧 EN' }}</span>
-                </a>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                     ● Server Aktif
                 </span>

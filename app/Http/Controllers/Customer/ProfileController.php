@@ -33,19 +33,42 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'phone' => 'nullable|string|max:30',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'remove_avatar' => 'nullable|boolean',
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
+            'avatar.image' => 'File avatar harus berupa gambar (JPG, PNG, atau WEBP).',
+            'avatar.max' => 'Ukuran file avatar maksimal 2MB.',
         ]);
 
-        $old = ['name' => $user->name, 'phone' => $user->phone];
-        $user->update($validated);
+        $old = ['name' => $user->name, 'phone' => $user->phone, 'avatar' => $user->avatar];
+
+        $user->name = $validated['name'];
+        $user->phone = $validated['phone'] ?? null;
+
+        if ($request->boolean('remove_avatar')) {
+            if ($user->avatar && !str_starts_with($user->avatar, 'http') && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
+            }
+            $user->avatar = null;
+        } elseif ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            if ($user->avatar && !str_starts_with($user->avatar, 'http') && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
+            }
+            $file = $request->file('avatar');
+            $filename = 'avatar_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/avatars'), $filename);
+            $user->avatar = '/uploads/avatars/' . $filename;
+        }
+
+        $user->save();
 
         ActivityLog::create([
             'user_id' => $user->id,
             'action' => 'USER_UPDATE_PROFILE',
-            'description' => "Pengguna {$user->name} memperbarui informasi biodata profil",
+            'description' => "Pengguna {$user->name} memperbarui informasi biodata & foto profil",
             'old_values' => $old,
-            'new_values' => $validated,
+            'new_values' => ['name' => $user->name, 'phone' => $user->phone, 'avatar' => $user->avatar],
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);

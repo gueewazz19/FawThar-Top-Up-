@@ -77,4 +77,33 @@ class OrderController extends Controller
 
         return redirect()->back()->with('success', "Status pesanan {$order->order_number} berhasil diubah menjadi: {$order->status->label()}");
     }
+
+    public function destroy(Request $request, Order $order)
+    {
+        $orderNumber = $order->order_number;
+
+        // Cascade delete child relations
+        $order->items()->delete();
+        if ($order->payment) {
+            $order->payment->delete();
+        }
+        if ($order->topUpTransaction) {
+            $order->topUpTransaction->delete();
+        }
+        $order->voucherUsages()->delete();
+
+        // Delete order
+        $order->delete();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'ADMIN_DELETE_ORDER',
+            'description' => "Pesanan {$orderNumber} berhasil dihapus oleh admin",
+            'old_values' => ['order_number' => $orderNumber],
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->route('admin.orders.index')->with('success', "Pesanan {$orderNumber} berhasil dihapus dari sistem.");
+    }
 }

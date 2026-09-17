@@ -1,133 +1,129 @@
 @extends('layouts.auth')
 
-@section('title', 'Masuk Akun')
+@section('title', 'Masuk')
 
 @section('content')
-<div class="glass-card overflow-hidden border-slate-200 dark:border-dark-border shadow-2xl rounded-3xl">
-    <!-- E-Commerce Tab Switcher (Shopee Style) -->
-    <div class="grid grid-cols-2 border-b border-slate-200 dark:border-dark-border bg-slate-100/60 dark:bg-dark-surface/40">
-        <a href="{{ route('login') }}" class="py-4 text-center text-sm font-black border-b-2 border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-dark-card/60 transition-all flex items-center justify-center space-x-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-            </svg>
-            <span>Masuk</span>
-        </a>
-        <a href="{{ route('register') }}" class="py-4 text-center text-sm font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-all flex items-center justify-center space-x-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-            </svg>
-            <span>Daftar</span>
-        </a>
+@php
+    $siteName = \App\Models\Setting::get('site_name', 'Fawthar TopUp');
+@endphp
+
+<!-- Shopee-Accurate Login Card -->
+<div class="bg-white dark:bg-[#121826] border border-slate-200/80 dark:border-dark-border shadow-xl rounded-2xl sm:rounded-3xl p-6 sm:p-9 max-w-[420px] mx-auto transition-all">
+    <!-- Header: Masuk -->
+    <div class="flex flex-col mb-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white font-['Outfit']">
+            Masuk
+        </h2>
+        <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Masuk ke Akun Anda</span>
     </div>
 
-    <!-- Form Container -->
-    <div class="p-6 sm:p-8">
-        <div class="mb-5">
-            <h2 class="text-2xl font-black text-slate-900 dark:text-white font-['Outfit']">Masuk ke Akun Anda</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Masuk dengan kredensial terdaftar untuk melanjutkan top up dan pantau riwayat pesanan.</p>
+    @if (session('error'))
+        <div class="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-500 flex items-center space-x-2">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('login.submit') }}" class="space-y-4">
+        @csrf
+
+        <!-- Username / Phone / Email Field -->
+        <div>
+            <div class="relative">
+                <input id="login" type="text" name="login" value="{{ old('login') }}" required autofocus
+                    placeholder="No. Handphone/Username/Email"
+                    class="w-full px-4 py-3 rounded-lg bg-white dark:bg-[#0B101B] border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#EE4D2D] focus:ring-1 focus:ring-[#EE4D2D] transition-colors @error('login') border-rose-500 @enderror">
+            </div>
+            @error('login')
+                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
-        <form method="POST" action="{{ route('login.submit') }}" class="space-y-4">
-            @csrf
-
-            <!-- Email Field -->
-            <div>
-                <label for="email" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                    Alamat Email
-                </label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                        </svg>
-                    </div>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                        placeholder="nama@email.com"
-                        autocomplete="email"
-                        class="form-input pl-10 @error('email') border-rose-500 @enderror">
-                </div>
-                @error('email')
-                    <p class="text-xs text-rose-500 dark:text-rose-400 mt-1.5 flex items-center space-x-1">
-                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                        <span>{{ $message }}</span>
-                    </p>
-                @enderror
-            </div>
-
-            <!-- Password Field with Icon & Eye Toggle -->
-            <div>
-                <div class="flex items-center justify-between mb-1.5">
-                    <label for="password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                        Kata Sandi
-                    </label>
-                    <a href="#" onclick="alert('Silakan hubungi customer service kami melalui WhatsApp untuk bantuan reset kata sandi.'); return false;" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">
-                        Lupa sandi?
-                    </a>
-                </div>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <input id="password" type="password" name="password" required
-                        placeholder="••••••••"
-                        autocomplete="current-password"
-                        class="form-input pl-10 pr-10 @error('password') border-rose-500 @enderror">
-                    <button type="button" onclick="togglePasswordVisibility('password', this)"
-                        class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-                        aria-label="Lihat kata sandi">
-                        <svg class="w-5 h-5 eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Password Field with Show/Hide & Lupa Password? -->
+        <div>
+            <div class="relative flex items-center">
+                <input id="password" type="password" name="password" required
+                    placeholder="Kata Sandi"
+                    class="w-full pl-4 pr-36 py-3 rounded-lg bg-white dark:bg-[#0B101B] border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#EE4D2D] focus:ring-1 focus:ring-[#EE4D2D] transition-colors @error('password') border-rose-500 @enderror">
+                
+                <div class="absolute right-3 flex items-center space-x-2 text-xs">
+                    <!-- Eye Toggle Icon -->
+                    <button type="button" onclick="togglePasswordVisibility('password', this)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1" title="Tampilkan sandi">
+                        <svg class="w-4 h-4 eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </button>
+                    <span class="text-slate-300 dark:text-slate-700">|</span>
+                    <!-- Forgot Password Link -->
+                    <a href="{{ route('password.request') }}" class="text-[#106bdc] hover:underline font-medium whitespace-nowrap">
+                        Lupa Sandi?
+                    </a>
                 </div>
-                @error('password')
-                    <p class="text-xs text-rose-500 dark:text-rose-400 mt-1.5 flex items-center space-x-1">
-                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                        <span>{{ $message }}</span>
-                    </p>
-                @enderror
             </div>
-
-            <!-- Remember Me -->
-            <div class="flex items-center justify-between pt-1">
-                <label class="flex items-center space-x-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none">
-                    <input type="checkbox" name="remember" class="w-4 h-4 rounded bg-white dark:bg-dark-bg border-slate-300 dark:border-dark-border text-indigo-600 focus:ring-indigo-500">
-                    <span>Ingat saya di perangkat ini</span>
-                </label>
-            </div>
-
-            <!-- Submit Button (Royal Electric Indigo) -->
-            <button type="submit" class="btn-primary w-full py-3.5 text-sm font-bold shadow-lg shadow-indigo-500/25">
-                <span>Masuk Sekarang</span>
-                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-            </button>
-        </form>
-
-        <!-- Security Trust Footer -->
-        <div class="mt-6 pt-5 border-t border-slate-200 dark:border-dark-border text-center space-y-3">
-            <div class="flex items-center justify-center space-x-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-                <span>Akun Anda dilindungi enkripsi SSL 256-bit & proteksi WAF anti-bruteforce</span>
-            </div>
-
-            <div class="text-xs text-slate-600 dark:text-slate-400">
-                Belum memiliki akun?
-                <a href="{{ route('register') }}" class="text-indigo-600 dark:text-indigo-400 hover:underline font-bold ml-1">
-                    Daftar Akun Baru
-                </a>
-            </div>
+            @error('password')
+                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+            @enderror
         </div>
+
+        <!-- Submit Button (Coral Red Shopee) -->
+        <button type="submit" class="w-full py-3.5 px-4 rounded-lg bg-[#EE4D2D] hover:bg-[#d73f1f] active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-md shadow-[#EE4D2D]/20 transition-all uppercase">
+            MASUK
+        </button>
+
+        <!-- Tetap Login Checkbox -->
+        <div class="flex items-center space-x-2 pt-1">
+            <label class="flex items-center space-x-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none">
+                <input type="checkbox" name="remember" class="w-4 h-4 rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-[#EE4D2D] focus:ring-[#EE4D2D]">
+                <span>Tetap Login</span>
+            </label>
+            <span class="text-slate-400 cursor-help" title="Menyimpan sesi login Anda di perangkat ini agar tidak perlu login berulang kali.">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </span>
+        </div>
+    </form>
+
+    <!-- Divider: ATAU -->
+    <div class="relative my-6 text-center">
+        <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-slate-200 dark:border-dark-border"></div>
+        </div>
+        <span class="relative px-4 text-xs font-bold text-slate-400 uppercase bg-white dark:bg-[#121826]">
+            ATAU
+        </span>
+    </div>
+
+    <!-- Social Login: ONLY Google Button -->
+    <div class="space-y-3">
+        <a href="{{ route('auth.google') }}" class="w-full flex items-center justify-center space-x-3 py-2.5 px-4 rounded-lg bg-white dark:bg-[#1a2234] hover:bg-slate-50 dark:hover:bg-[#20293e] border border-slate-300 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all">
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>Google</span>
+        </a>
+    </div>
+
+    <!-- Agreement Note -->
+    <div class="mt-6 text-center text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+        Dengan login, kamu menyetujui 
+        <a href="{{ route('home') }}" class="text-[#EE4D2D] hover:underline">Syarat, Ketentuan</a> 
+        dan Kebijakan dari {{ $siteName }} & 
+        <a href="{{ route('home') }}" class="text-[#EE4D2D] hover:underline">Kebijakan Privasi</a> {{ $siteName }}.
+    </div>
+
+    <!-- Bottom Link: Register -->
+    <div class="mt-6 pt-5 border-t border-slate-200 dark:border-dark-border text-center text-xs text-slate-600 dark:text-slate-400">
+        Baru di {{ $siteName }}?
+        <a href="{{ route('register') }}" class="text-[#EE4D2D] hover:underline font-bold ml-1">
+            Daftar
+        </a>
     </div>
 </div>
 

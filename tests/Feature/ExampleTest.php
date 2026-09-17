@@ -15,5 +15,10 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+        $response->assertSee('Beranda');
+        $response->assertSee('Daftar Game');
+        $response->assertSee('Cara Top Up');
+        $response->assertSee('Masuk');
+        $response->assertSee('Daftar');
     }
 }

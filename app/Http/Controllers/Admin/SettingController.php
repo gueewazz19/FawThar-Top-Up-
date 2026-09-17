@@ -32,7 +32,8 @@ class SettingController extends Controller
     {
         $validated = $request->validate([
             'site_name' => 'required|string|max:100',
-            'site_logo' => 'nullable|string|max:500',
+            'site_logo_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'remove_logo' => 'nullable|boolean',
             'site_tagline' => 'required|string|max:200',
             'support_email' => 'required|email|max:100',
             'support_whatsapp' => 'required|string|max:30',
@@ -45,7 +46,21 @@ class SettingController extends Controller
         ]);
 
         Setting::set('site_name', $validated['site_name'], 'string', 'general');
-        Setting::set('site_logo', $validated['site_logo'] ?? '', 'string', 'general');
+
+        if ($request->boolean('remove_logo')) {
+            $currentLogo = Setting::get('site_logo');
+            if ($currentLogo && file_exists(public_path($currentLogo))) {
+                @unlink(public_path($currentLogo));
+            }
+            Setting::set('site_logo', '', 'string', 'general');
+        } elseif ($request->hasFile('site_logo_file') && $request->file('site_logo_file')->isValid()) {
+            $file = $request->file('site_logo_file');
+            $filename = 'logo_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/logos'), $filename);
+            Setting::set('site_logo', '/uploads/logos/' . $filename, 'string', 'general');
+        } elseif ($request->filled('site_logo')) {
+            Setting::set('site_logo', $request->input('site_logo'), 'string', 'general');
+        }
         Setting::set('site_tagline', $validated['site_tagline'], 'string', 'general');
         Setting::set('support_email', $validated['support_email'], 'string', 'contact');
         Setting::set('support_whatsapp', $validated['support_whatsapp'], 'string', 'contact');

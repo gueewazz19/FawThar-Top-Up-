@@ -27,6 +27,9 @@ Route::get('/locale/{lang}', [\App\Http\Controllers\LocaleController::class, 'sw
 
 
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\GoogleAuthController;
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -37,7 +40,21 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.submit');
 
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register/send-otp', [RegisterController::class, 'sendOtp'])->name('register.send_otp');
+    Route::post('/register/verify-otp', [RegisterController::class, 'verifyOtp'])->name('register.verify_otp');
+    Route::post('/register/complete', [RegisterController::class, 'completeRegistration'])->name('register.complete');
     Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:register')->name('register.submit');
+
+    // Forgot & Reset Password
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendResetOtp'])->name('password.send_otp');
+    Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyResetOtp'])->name('password.verify_otp');
+    Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
+
+    // Official Google OAuth 2.0
+    Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
@@ -83,6 +100,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update_status');
+    Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 
     // Activity Logs & WAF Defense Monitoring
     Route::get('/activity-logs', [AdminActivityLogController::class, 'index'])->name('activity-logs.index');

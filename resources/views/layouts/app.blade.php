@@ -75,7 +75,7 @@
                             <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white font-['Outfit'] group-hover:text-emerald-500 transition-colors">
                                 {{ $siteName }}
                             </span>
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-widest uppercase -mt-1">Digital Game Store</span>
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-widest uppercase -mt-1">Pusat Top Up Game</span>
                         </div>
                     </a>
                 </div>
@@ -83,30 +83,24 @@
                 <!-- Navigation Links with ScrollSpy & Dynamic Green Active Pill -->
                 <nav id="navbar-links" class="hidden md:flex items-center p-1.5 rounded-2xl bg-slate-100/80 dark:bg-dark-surface/60 border border-slate-200 dark:border-dark-border/60 space-x-1">
                     <a href="{{ url('/#hero') }}" data-target="hero" class="nav-pill active">
-                        {{ __('Home') }}
+                        Beranda
                     </a>
                     <a href="{{ url('/#games') }}" data-target="games" class="nav-pill">
-                        {{ __('Game List') }}
+                        Daftar Game
                     </a>
                     <a href="{{ url('/#promo') }}" data-target="promo" class="nav-pill">
-                        {{ __('Promo') }}
+                        Promo
                     </a>
                     <a href="{{ url('/#how-it-works') }}" data-target="how-it-works" class="nav-pill">
-                        {{ __('How to Top Up') }}
+                        Cara Top Up
                     </a>
                     <a href="{{ url('/#faq') }}" data-target="faq" class="nav-pill">
-                        {{ __('FAQ') }}
+                        FAQ
                     </a>
                 </nav>
 
                 <!-- Auth, Theme Switcher & Mobile Actions -->
                 <div class="flex items-center space-x-2 sm:space-x-2.5">
-                    <!-- Language Switcher (ID / EN) -->
-                    <a href="{{ route('locale.switch', $currentLocale === 'id' ? 'en' : 'id') }}" 
-                        title="{{ $currentLocale === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia' }}"
-                        class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-dark-surface dark:hover:bg-dark-hover border border-slate-300/80 dark:border-dark-border text-xs font-bold text-slate-700 dark:text-slate-200 transition-all hover:scale-105 active:scale-95 shadow-sm">
-                        <span>{{ $currentLocale === 'id' ? '🇮🇩 ID' : '🇬🇧 EN' }}</span>
-                    </a>
 
                     <!-- Dark / Light Mode Toggle Button -->
                     <button id="themeToggleBtn" type="button" aria-label="Ganti Tema Gelap / Terang" title="Ganti Mode Terang / Gelap"
@@ -133,10 +127,8 @@
                         @endif
 
                         <!-- Customer Profile Link -->
-                        <a href="{{ route('profile.index') }}" title="{{ __('Profile') }}" class="flex items-center space-x-2 py-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border hover:border-emerald-500/40 transition-colors">
-                            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-xs font-black text-slate-950">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                            </div>
+                        <a href="{{ route('profile.index') }}" title="Profil Saya" class="flex items-center space-x-2 py-1.5 px-2.5 rounded-xl bg-slate-100 dark:bg-dark-card border border-slate-200 dark:border-dark-border hover:border-emerald-500/40 transition-colors">
+                            <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-7 h-7 rounded-lg object-cover border border-emerald-500/40 flex-shrink-0">
                             <div class="hidden sm:flex flex-col text-left">
                                 <span class="text-xs font-semibold text-slate-900 dark:text-white leading-tight truncate max-w-[90px]">{{ auth()->user()->name }}</span>
                                 <span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider">{{ auth()->user()->loyalty_tier['name'] ?? 'Bronze' }}</span>
@@ -145,7 +137,7 @@
 
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" title="{{ __('Logout') }}" class="p-2 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-surface border border-transparent hover:border-slate-200 dark:hover:border-dark-border transition-colors">
+                            <button type="submit" title="Keluar" class="p-2 text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 rounded-xl hover:bg-slate-100 dark:hover:bg-dark-surface border border-transparent hover:border-slate-200 dark:hover:border-dark-border transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
@@ -153,10 +145,10 @@
                         </form>
                     @else
                         <a href="{{ route('login') }}" class="btn-secondary text-xs sm:text-sm py-2 px-3.5">
-                            {{ __('Login') }}
+                            Masuk
                         </a>
                         <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm py-2 px-3.5">
-                            {{ __('Register') }}
+                            Daftar
                         </a>
                     @endauth
 
@@ -173,21 +165,31 @@
             <div id="mobileMenu" class="hidden md:hidden pb-4 pt-2 border-t border-slate-200 dark:border-dark-border/60">
                 <nav class="flex flex-col space-y-1">
                     <a href="{{ url('/#hero') }}" data-target="hero" class="nav-pill active text-left">
-                        {{ __('Home') }}
+                        Beranda
                     </a>
                     <a href="{{ url('/#games') }}" data-target="games" class="nav-pill text-left">
-                        {{ __('Game List') }}
+                        Daftar Game
                     </a>
                     <a href="{{ url('/#promo') }}" data-target="promo" class="nav-pill text-left">
-                        {{ __('Promo') }}
+                        Promo
                     </a>
                     <a href="{{ url('/#how-it-works') }}" data-target="how-it-works" class="nav-pill text-left">
-                        {{ __('How to Top Up') }}
+                        Cara Top Up
                     </a>
                     <a href="{{ url('/#faq') }}" data-target="faq" class="nav-pill text-left">
-                        {{ __('FAQ') }}
+                        FAQ
                     </a>
                 </nav>
+                @guest
+                    <div class="grid grid-cols-2 gap-2 pt-3 mt-2 border-t border-slate-200 dark:border-dark-border/60">
+                        <a href="{{ route('login') }}" class="btn-secondary text-center text-xs py-2 px-3">
+                            Masuk
+                        </a>
+                        <a href="{{ route('register') }}" class="btn-primary text-center text-xs py-2 px-3">
+                            Daftar
+                        </a>
+                    </div>
+                @endguest
             </div>
         </div>
     </header>

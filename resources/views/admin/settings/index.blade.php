@@ -11,7 +11,7 @@
     </div>
 
     <!-- Settings Form -->
-    <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6">
+    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-6">
         @csrf
 
         <!-- Branding & Logo Section -->
@@ -38,18 +38,42 @@
             </div>
 
             <div>
-                <label class="form-label text-xs">URL Logo Website (Opsional)</label>
-                <div class="flex items-center space-x-3">
-                    <input type="text" id="site_logo_input" name="site_logo" value="{{ old('site_logo', $settings['site_logo']) }}" placeholder="https://domain.com/logo.png atau kosongkan untuk icon bawaan" class="form-input text-sm w-full" oninput="previewLogo(this.value)">
-                    <div id="logo_preview_container" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        @if($settings['site_logo'])
-                            <img id="logo_preview_img" src="{{ $settings['site_logo'] }}" class="w-full h-full object-cover">
+                <label class="form-label text-xs">Unggah Logo Website (PNG / JPG / WEBP / SVG)</label>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+                    <div id="logo_preview_container" class="w-16 h-16 rounded-2xl bg-slate-800/90 border border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-lg relative group transition-opacity">
+                        @if(!empty($settings['site_logo']))
+                            <img id="logo_preview_img" src="{{ $settings['site_logo'] }}" class="w-full h-full object-contain p-1.5">
                         @else
-                            <span id="logo_preview_placeholder" class="text-xs font-bold text-amber-400">Logo</span>
+                            <div id="logo_preview_placeholder" class="flex flex-col items-center justify-center text-slate-500">
+                                <svg class="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-[9px] font-bold mt-0.5 text-slate-400">Default</span>
+                            </div>
                         @endif
                     </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <label for="site_logo_file" class="cursor-pointer inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 border border-cyan-500/30 transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                <span>Pilih File Logo Baru</span>
+                            </label>
+                            <input type="file" id="site_logo_file" name="site_logo_file" accept="image/*" class="hidden" onchange="previewUploadedLogo(this)">
+                            
+                            @if(!empty($settings['site_logo']))
+                                <label class="inline-flex items-center space-x-2 text-xs text-rose-400 hover:text-rose-300 cursor-pointer select-none px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20">
+                                    <input type="checkbox" name="remove_logo" value="1" class="w-3.5 h-3.5 rounded bg-slate-800 border-slate-700 text-rose-500 focus:ring-rose-500" onchange="toggleRemoveLogo(this)">
+                                    <span>Hapus Logo Saat Ini</span>
+                                </label>
+                            @endif
+                        </div>
+                        <p id="file_selected_name" class="text-[11px] text-slate-400">
+                            Upload file logo tanpa perlu URL (format PNG transparan, JPG, WEBP, atau SVG, maks. 2MB).
+                        </p>
+                    </div>
                 </div>
-                <p class="text-[11px] text-slate-500 mt-1">Jika diisi, logo gambar ini akan menggantikan ikon default di navbar guest dan admin.</p>
             </div>
 
             <div>
@@ -154,12 +178,29 @@
 </div>
 
 <script>
-    function previewLogo(url) {
+    function previewUploadedLogo(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const nameEl = document.getElementById('file_selected_name');
+            if (nameEl) {
+                nameEl.innerHTML = `<span class="text-emerald-400 font-semibold">File siap diupload: ${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>`;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const container = document.getElementById('logo_preview_container');
+                container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-contain p-1.5">`;
+                container.classList.remove('opacity-40');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function toggleRemoveLogo(checkbox) {
         const container = document.getElementById('logo_preview_container');
-        if (url && url.startsWith('http')) {
-            container.innerHTML = `<img src="${url}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-xs text-rose-400\\'>Error</span>'">`;
+        if (checkbox.checked) {
+            container.classList.add('opacity-30', 'grayscale');
         } else {
-            container.innerHTML = `<span class="text-xs font-bold text-amber-400">Logo</span>`;
+            container.classList.remove('opacity-30', 'grayscale');
         }
     }
 </script>
