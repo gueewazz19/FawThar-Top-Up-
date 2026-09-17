@@ -216,4 +216,13 @@ class NewEnhancementsTest extends TestCase
         $loginResponse->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($user);
     }
+
+    public function test_google_auth_redirects_to_official_google_oauth_server(): void
+    {
+        $response = $this->get('/auth/google');
+        $response->assertStatus(302);
+        $redirectUrl = $response->headers->get('Location');
+        $this->assertStringContainsString('accounts.google.com/o/oauth2/v2/auth', $redirectUrl);
+        $this->assertStringContainsString('761156082768-klf69eatoo93nk1j76dm8qe7salosi2i', $redirectUrl);
+    }
 }
