@@ -17,14 +17,6 @@
         <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Masuk ke Akun Anda</span>
     </div>
 
-    @if (session('error'))
-        <div class="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-500 flex items-center space-x-2">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
 
     <form method="POST" action="{{ route('login.submit') }}" class="space-y-4">
         @csrf
