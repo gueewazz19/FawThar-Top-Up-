@@ -12,6 +12,11 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        if (! $request->expectsJson()) {
+            session()->flash('info', 'Silakan masuk atau buat akun terlebih dahulu untuk melakukan transaksi top up.');
+            return route('login');
+        }
+
+        return null;
     }
 }

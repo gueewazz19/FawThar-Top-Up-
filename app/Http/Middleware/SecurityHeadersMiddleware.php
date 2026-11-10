@@ -31,13 +31,14 @@ class SecurityHeadersMiddleware
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(self)');
 
-        // Content Security Policy (CSP) compatible with Google Fonts & local assets
+        // Content Security Policy (CSP) compatible with Google Fonts, Cloudflare Turnstile & local assets
         $csp = "default-src 'self'; " .
-               "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " .
-               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " .
+               "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://challenges.cloudflare.com; " .
+               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://challenges.cloudflare.com; " .
                "font-src 'self' https://fonts.gstatic.com; " .
                "img-src 'self' data: https:; " .
-               "connect-src 'self'; " .
+               "frame-src 'self' https://challenges.cloudflare.com; " .
+               "connect-src 'self' https://challenges.cloudflare.com; " .
                "frame-ancestors 'self'; " .
                "base-uri 'self'; " .
                "form-action 'self';";

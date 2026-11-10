@@ -14,6 +14,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'username',
         'email',
         'phone',
         'avatar',
@@ -24,6 +25,21 @@ class User extends Authenticatable
         'last_login_at',
         'last_login_ip',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if (empty($user->username) && !empty($user->email)) {
+                $base = preg_replace('/[^a-zA-Z0-9_]/', '', explode('@', $user->email)[0]) ?: 'user';
+                $username = $base;
+                $counter = 1;
+                while (static::where('username', $username)->exists()) {
+                    $username = $base . $counter++;
+                }
+                $user->username = $username;
+            }
+        });
+    }
 
     public function getAvatarUrlAttribute(): string
     {

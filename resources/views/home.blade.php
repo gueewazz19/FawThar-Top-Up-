@@ -212,12 +212,21 @@
 
                     <!-- Top Up Action Button -->
                     <div class="p-4 pt-0">
-                        <a href="{{ route('topup.show', $game->slug) }}" class="btn-primary w-full py-2.5 text-xs text-center flex items-center justify-center space-x-1">
-                            <span>Top Up Sekarang</span>
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                            </svg>
-                        </a>
+                        @guest
+                            <button type="button" onclick="openGuestLoginModal('{{ addslashes($game->name) }}')" class="btn-primary w-full py-2.5 text-xs text-center flex items-center justify-center space-x-1 cursor-pointer">
+                                <span>Top Up Sekarang</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </button>
+                        @else
+                            <a href="{{ route('topup.show', $game->slug) }}" class="btn-primary w-full py-2.5 text-xs text-center flex items-center justify-center space-x-1">
+                                <span>Top Up Sekarang</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                </svg>
+                            </a>
+                        @endguest
                     </div>
                 </div>
             @empty
@@ -313,6 +322,84 @@
 </section>
 @endif
 
+<!-- Guest Login Prompt Modal (Muncul saat user belum login mengklik 'Top Up Sekarang') -->
+@guest
+<div id="guestLoginModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300" onclick="handleBackdropClick(event)">
+    <div class="relative w-full max-w-md bg-white dark:bg-[#0B101D] border border-slate-200/90 dark:border-slate-800/90 rounded-3xl shadow-2xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.85)] p-6 sm:p-8 text-center overflow-hidden transform transition-all">
+        <!-- Ambient Glow Elements behind card content -->
+        <div class="absolute -top-16 -left-16 w-36 h-36 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -right-16 w-36 h-36 bg-indigo-500/10 dark:bg-indigo-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- Close Button (Tanda Silang X) -->
+        <button type="button" onclick="closeGuestLoginModal()" class="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white bg-slate-100/80 hover:bg-slate-200/80 dark:bg-slate-800/60 dark:hover:bg-slate-700/80 border border-slate-200/60 dark:border-slate-700/50 transition-all duration-200 group" title="Tutup Pop Up" aria-label="Tutup Pop Up">
+            <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <div class="relative space-y-5">
+            <!-- Glowing 3D-effect Lock Badge with Ambient Ring -->
+            <div class="relative mx-auto w-20 h-20 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-emerald-500 to-indigo-600 opacity-20 dark:opacity-30 blur-lg animate-pulse"></div>
+                <div class="relative w-16 h-16 rounded-2xl bg-gradient-to-b from-indigo-50 to-emerald-50/40 dark:from-[#151F36] dark:to-[#0C1220] border border-indigo-200/80 dark:border-indigo-500/30 flex items-center justify-center shadow-lg shadow-indigo-500/10 dark:shadow-indigo-500/20">
+                    <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Title & Status Pill -->
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>Akses Transaksi Akun</span>
+                </div>
+
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-['Outfit'] tracking-tight">
+                    Login Terlebih Dahulu
+                </h3>
+
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+                    Untuk melakukan transaksi top up game <span id="modalGameTarget" class="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20"></span> dan memastikan pesanan tercatat aman, silakan masuk ke akun Anda.
+                </p>
+            </div>
+
+            <!-- Micro-Perks / Trust Points -->
+            <div class="grid grid-cols-3 gap-2 py-3 px-2 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/80 text-[11px] font-medium text-slate-600 dark:text-slate-300">
+                <div class="flex flex-col items-center gap-1 text-center">
+                    <span class="text-base">⚡</span>
+                    <span class="font-semibold text-slate-800 dark:text-slate-200">1-3 Detik</span>
+                    <span class="text-[10px] text-slate-500">Proses Kilat</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 text-center border-x border-slate-200 dark:border-slate-800">
+                    <span class="text-base">🛡️</span>
+                    <span class="font-semibold text-slate-800 dark:text-slate-200">100% Legal</span>
+                    <span class="text-[10px] text-slate-500">Aman Terjamin</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 text-center">
+                    <span class="text-base">🎁</span>
+                    <span class="font-semibold text-slate-800 dark:text-slate-200">Poin & Promo</span>
+                    <span class="text-[10px] text-slate-500">Reward Khusus</span>
+                </div>
+            </div>
+
+            <!-- Action CTA Buttons -->
+            <div class="space-y-2.5 pt-1">
+                <a href="{{ route('login') }}" class="w-full py-3 px-5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 hover:from-indigo-500 hover:to-indigo-700 shadow-md shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 group">
+                    <span>Masuk / Login Sekarang</span>
+                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+                <a href="{{ route('register') }}" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800/70 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all block text-center">
+                    Belum Punya Akun? <span class="text-indigo-600 dark:text-indigo-400 font-bold underline decoration-indigo-400/40 underline-offset-2">Daftar Akun Baru</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endguest
+
 <script>
     function filterGames() {
         const query = document.getElementById('gameSearch').value.toLowerCase();
@@ -328,5 +415,37 @@
             }
         });
     }
+
+    function openGuestLoginModal(gameName) {
+        const modal = document.getElementById('guestLoginModal');
+        const targetEl = document.getElementById('modalGameTarget');
+        if (targetEl) {
+            targetEl.textContent = gameName ? `"${gameName}"` : '';
+        }
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+    }
+
+    function closeGuestLoginModal() {
+        const modal = document.getElementById('guestLoginModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    function handleBackdropClick(event) {
+        if (event.target === document.getElementById('guestLoginModal')) {
+            closeGuestLoginModal();
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeGuestLoginModal();
+        }
+    });
 </script>
 @endsection

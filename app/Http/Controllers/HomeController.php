@@ -22,7 +22,7 @@ class HomeController extends Controller
             ->where('end_date', '>=', now())
             ->take(4)
             ->get();
-        $faqs = FAQ::where('is_active', true)->orderBy('sort_order', 'asc')->take(6)->get();
+        $faqs = FAQ::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
         return view('home', compact('categories', 'popularGames', 'promotions', 'faqs'));
     }

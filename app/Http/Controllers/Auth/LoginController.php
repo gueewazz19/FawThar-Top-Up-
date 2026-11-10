@@ -22,65 +22,27 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $loginInput = trim($request->input('login') ?: $request->input('email') ?: '');
-
-        if (empty($loginInput)) {
-            throw ValidationException::withMessages([
-                'login' => __('Nomor handphone, username, atau email wajib diisi.'),
-            ]);
-        }
-
         $request->validate([
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ], [
+            'username.required' => 'Username wajib diisi.',
             'password.required' => 'Kata sandi wajib diisi.',
         ]);
 
+        $username = trim($request->input('username'));
         $password = $request->input('password');
         $remember = $request->boolean('remember');
 
-        // Check if user exists to prevent fake/unregistered logins
-        $existingUser = User::where('email', strtolower($loginInput))
-            ->orWhere('phone', $loginInput)
-            ->orWhere('name', $loginInput)
-            ->first();
-
-        if (!$existingUser) {
-            $cleanPhone = preg_replace('/[^0-9]/', '', $loginInput);
-            if (!empty($cleanPhone)) {
-                if (str_starts_with($cleanPhone, '62')) {
-                    $cleanPhone = '0' . substr($cleanPhone, 2);
-                }
-                $existingUser = User::where('phone', $cleanPhone)->first();
-            }
-        }
+        $existingUser = User::where('username', $username)->first();
 
         if (!$existingUser) {
             throw ValidationException::withMessages([
-                'login' => 'Akun tidak ditemukan. Harap lakukan pendaftaran akun baru terlebih dahulu sebelum masuk.',
+                'username' => 'Akun belum terdaftar. Silakan lakukan pendaftaran akun baru terlebih dahulu.',
             ]);
         }
 
-        if ($existingUser->provider === 'google' && empty($existingUser->password)) {
-            throw ValidationException::withMessages([
-                'login' => 'Akun ini terdaftar via Akun Google resmi. Silakan masuk menggunakan tombol Masuk dengan Google di bawah.',
-            ]);
-        }
-
-        // Check if input is email, phone, or username
-        $fieldType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : (preg_match('/^[0-9+]+$/', $loginInput) ? 'phone' : 'name');
-
-        // Attempt primary field
-        $attempt = Auth::attempt([$fieldType => $loginInput, 'password' => $password], $remember);
-
-        // Fallback: If not found by primary, attempt email or name or phone
-        if (!$attempt && $fieldType !== 'email' && str_contains($loginInput, '@')) {
-            $attempt = Auth::attempt(['email' => strtolower($loginInput), 'password' => $password], $remember);
-        } elseif (!$attempt && isset($cleanPhone) && !empty($cleanPhone)) {
-            $attempt = Auth::attempt(['phone' => $cleanPhone, 'password' => $password], $remember);
-        } elseif (!$attempt && $fieldType !== 'name') {
-            $attempt = Auth::attempt(['name' => $loginInput, 'password' => $password], $remember);
-        }
+        $attempt = Auth::attempt(['username' => $username, 'password' => $password], $remember);
 
         if ($attempt) {
             $request->session()->regenerate();

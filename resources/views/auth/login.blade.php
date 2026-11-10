@@ -7,129 +7,140 @@
     $siteName = \App\Models\Setting::get('site_name', 'Fawthar TopUp');
 @endphp
 
-<!-- Shopee-Accurate Login Card -->
-<div class="bg-white dark:bg-[#121826] border border-slate-200/80 dark:border-dark-border shadow-xl rounded-2xl sm:rounded-3xl p-6 sm:p-9 max-w-[420px] mx-auto transition-all">
+<!-- Modern Glassmorphism Login Card -->
+<div class="glass-card backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-2xl rounded-3xl p-6 sm:p-8 max-w-[420px] mx-auto relative overflow-hidden">
+    <!-- Decorative glow in the corner -->
+    <div class="absolute -top-10 -right-10 w-32 h-32 bg-brand opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-brand opacity-10 rounded-full blur-2xl pointer-events-none"></div>
+
     <!-- Header: Masuk -->
-    <div class="flex flex-col mb-6">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white font-['Outfit']">
-            Masuk
+    <div class="flex flex-col mb-6 relative z-10 text-center">
+        <h2 class="text-3xl font-black text-slate-900 dark:text-white font-['Outfit'] tracking-tight">
+            Selamat Datang!
         </h2>
-        <span class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Masuk ke Akun Anda</span>
+        <span class="text-sm text-slate-500 dark:text-slate-400 mt-1">Silakan masuk ke akun Anda</span>
     </div>
 
+    @if(session('success'))
+        <div class="mb-5 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center space-x-2.5 relative z-10">
+            <svg class="w-4 h-4 flex-shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
 
-    <form method="POST" action="{{ route('login.submit') }}" class="space-y-4">
+    @if(session('info'))
+        <div class="mb-5 p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-xs text-indigo-600 dark:text-indigo-400 font-medium flex items-center space-x-2.5 relative z-10">
+            <svg class="w-4 h-4 flex-shrink-0 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('info') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-500 font-medium flex items-center space-x-2.5 relative z-10">
+            <svg class="w-4 h-4 flex-shrink-0 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('login.submit') }}" autocomplete="off" class="space-y-5 relative z-10">
         @csrf
 
-        <!-- Username / Phone / Email Field -->
+        <!-- Username Field -->
         <div>
-            <div class="relative">
-                <input id="login" type="text" name="login" value="{{ old('login') }}" required autofocus
-                    placeholder="No. Handphone/Username/Email"
-                    class="w-full px-4 py-3 rounded-lg bg-white dark:bg-[#0B101B] border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#EE4D2D] focus:ring-1 focus:ring-[#EE4D2D] transition-colors @error('login') border-rose-500 @enderror">
+            <div class="input-wrapper">
+                <div class="input-icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                      <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus
+                    placeholder="Username"
+                    class="glass-input w-full pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700/50 text-[13px] font-semibold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none ring-brand transition-all @error('username') border-rose-500 @enderror">
             </div>
-            @error('login')
-                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+            @error('username')
+                <p class="text-xs text-rose-500 mt-1.5 pl-1">{{ $message }}</p>
             @enderror
         </div>
 
         <!-- Password Field with Show/Hide & Lupa Password? -->
         <div>
-            <div class="relative flex items-center">
-                <input id="password" type="password" name="password" required
+            <div class="input-wrapper">
+                <div class="input-icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                      <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input id="password" type="password" name="password" required autocomplete="new-password"
                     placeholder="Kata Sandi"
-                    class="w-full pl-4 pr-36 py-3 rounded-lg bg-white dark:bg-[#0B101B] border border-slate-300 dark:border-slate-700 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#EE4D2D] focus:ring-1 focus:ring-[#EE4D2D] transition-colors @error('password') border-rose-500 @enderror">
+                    class="glass-input w-full pr-12 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700/50 text-[13px] font-semibold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none ring-brand transition-all @error('password') border-rose-500 @enderror">
                 
-                <div class="absolute right-3 flex items-center space-x-2 text-xs">
+                <div class="password-toggle-btn">
                     <!-- Eye Toggle Icon -->
-                    <button type="button" onclick="togglePasswordVisibility('password', this)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1" title="Tampilkan sandi">
+                    <button type="button" onclick="togglePasswordVisibility('password', this)" class="text-slate-400 hover:text-brand transition-colors p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" title="Tampilkan sandi">
                         <svg class="w-4 h-4 eye-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                     </button>
-                    <span class="text-slate-300 dark:text-slate-700">|</span>
-                    <!-- Forgot Password Link -->
-                    <a href="{{ route('password.request') }}" class="text-[#106bdc] hover:underline font-medium whitespace-nowrap">
-                        Lupa Sandi?
-                    </a>
                 </div>
             </div>
             @error('password')
-                <p class="text-xs text-rose-500 mt-1">{{ $message }}</p>
+                <p class="text-xs text-rose-500 mt-1.5 pl-1">{{ $message }}</p>
             @enderror
+            
+            <div class="flex justify-between items-center mt-3">
+                <!-- Tetap Login Checkbox -->
+                <label class="flex items-center space-x-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none group/check">
+                    <input type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-brand focus:ring-brand focus:ring-2 focus:ring-offset-2 dark:bg-slate-800">
+                    <span class="group-hover/check:text-slate-900 dark:group-hover/check:text-white transition-colors">Ingat Saya</span>
+                </label>
+
+                <!-- Forgot Password Link -->
+                <a href="{{ route('password.request') }}" class="text-xs text-brand hover:text-brand font-semibold transition-colors">
+                    Lupa Sandi?
+                </a>
+            </div>
         </div>
 
-        <!-- Submit Button (Coral Red Shopee) -->
-        <button type="submit" class="w-full py-3.5 px-4 rounded-lg bg-[#EE4D2D] hover:bg-[#d73f1f] active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-md shadow-[#EE4D2D]/20 transition-all uppercase">
-            MASUK
+        <!-- Submit Button -->
+        <button type="submit" class="btn-auth-primary mt-2">
+            MASUK SEKARANG
         </button>
-
-        <!-- Tetap Login Checkbox -->
-        <div class="flex items-center space-x-2 pt-1">
-            <label class="flex items-center space-x-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none">
-                <input type="checkbox" name="remember" class="w-4 h-4 rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-[#EE4D2D] focus:ring-[#EE4D2D]">
-                <span>Tetap Login</span>
-            </label>
-            <span class="text-slate-400 cursor-help" title="Menyimpan sesi login Anda di perangkat ini agar tidak perlu login berulang kali.">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </span>
-        </div>
     </form>
-
-    <!-- Divider: ATAU -->
-    <div class="relative my-6 text-center">
-        <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-slate-200 dark:border-dark-border"></div>
-        </div>
-        <span class="relative px-4 text-xs font-bold text-slate-400 uppercase bg-white dark:bg-[#121826]">
-            ATAU
-        </span>
-    </div>
-
-    <!-- Social Login: ONLY Google Button -->
-    <div class="space-y-3">
-        <a href="{{ route('auth.google') }}" class="w-full flex items-center justify-center space-x-3 py-2.5 px-4 rounded-lg bg-white dark:bg-[#1a2234] hover:bg-slate-50 dark:hover:bg-[#20293e] border border-slate-300 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all">
-            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Google</span>
-        </a>
-    </div>
 
     <!-- Agreement Note -->
     <div class="mt-6 text-center text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
         Dengan login, kamu menyetujui 
-        <a href="{{ route('home') }}" class="text-[#EE4D2D] hover:underline">Syarat, Ketentuan</a> 
+        <a href="{{ route('home') }}" class="text-brand hover:underline">Syarat, Ketentuan</a> 
         dan Kebijakan dari {{ $siteName }} & 
-        <a href="{{ route('home') }}" class="text-[#EE4D2D] hover:underline">Kebijakan Privasi</a> {{ $siteName }}.
+        <a href="{{ route('home') }}" class="text-brand hover:underline">Kebijakan Privasi</a> {{ $siteName }}.
     </div>
 
     <!-- Bottom Link: Register -->
     <div class="mt-6 pt-5 border-t border-slate-200 dark:border-dark-border text-center text-xs text-slate-600 dark:text-slate-400">
         Baru di {{ $siteName }}?
-        <a href="{{ route('register') }}" class="text-[#EE4D2D] hover:underline font-bold ml-1">
+        <a href="{{ route('register') }}" class="text-brand hover:underline font-bold ml-1">
             Daftar
         </a>
     </div>
 </div>
 
 <script>
-    function togglePasswordVisibility(inputId, btn) {
-        const input = document.getElementById(inputId);
-        const icon = btn.querySelector('.eye-icon');
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />';
-        } else {
-            input.type = 'password';
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+    // Ensure password field is never pre-filled automatically on page load
+    window.addEventListener('DOMContentLoaded', function () {
+        const passInput = document.getElementById('password');
+        if (passInput) {
+            passInput.value = '';
+            setTimeout(() => { passInput.value = ''; }, 50);
+            setTimeout(() => { passInput.value = ''; }, 250);
+            setTimeout(() => { passInput.value = ''; }, 600);
         }
-    }
+    });
 </script>
 @endsection

@@ -17,6 +17,11 @@ class TopUpController extends Controller
 {
     public function show(string $slug)
     {
+        if (!auth()->check()) {
+            session()->put('url.intended', route('topup.show', $slug));
+            return redirect()->route('login')->with('info', 'Silakan masuk atau buat akun terlebih dahulu untuk melakukan transaksi top up.');
+        }
+
         $game = Game::where('slug', $slug)
             ->where('is_active', true)
             ->with(['category', 'products' => function ($query) {
@@ -64,6 +69,11 @@ class TopUpController extends Controller
 
     public function checkout(Request $request, string $slug)
     {
+        if (!auth()->check()) {
+            session()->put('url.intended', route('topup.show', $slug));
+            return redirect()->route('login')->with('info', 'Silakan masuk atau buat akun terlebih dahulu untuk melakukan transaksi top up.');
+        }
+
         $game = Game::where('slug', $slug)->where('is_active', true)->firstOrFail();
 
         $rules = [

@@ -8,6 +8,13 @@
     $socialFacebook = \App\Models\Setting::get('social_facebook', 'https://facebook.com');
     $socialTiktok = \App\Models\Setting::get('social_tiktok', 'https://tiktok.com');
     $currentLocale = app()->getLocale();
+
+    // Guest / Landing Page Background Customization
+    $guestBgType = \App\Models\Setting::get('guest_bg_type', 'default');
+    $guestBgColor = \App\Models\Setting::get('guest_bg_color', '#080C14');
+    $guestBgImage = \App\Models\Setting::get('guest_bg_image', '');
+    $guestBgPattern = (bool) \App\Models\Setting::get('guest_bg_pattern', true);
+    $isHomeOrGuest = request()->routeIs('home') || !auth()->check();
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
@@ -47,12 +54,32 @@
     <!-- Scripts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-[#080C14] dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 transition-colors duration-200">
-    <!-- Ambient Background Lighting with Slow Pulse -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
-        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s;"></div>
+<body class="text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 transition-colors duration-200 {{ $isHomeOrGuest && $guestBgType !== 'default' ? '' : 'bg-slate-50 dark:bg-[#080C14]' }}"
+    style="{{ $isHomeOrGuest && $guestBgType === 'color' ? 'background-color: ' . $guestBgColor . ' !important;' : '' }}">
+
+    <!-- Guest Background Image (GPU-Accelerated Fixed Layer, prevents scroll lag) -->
+    @if($isHomeOrGuest && $guestBgType === 'image' && !empty($guestBgImage))
+        <div class="fixed inset-0 pointer-events-none z-0 bg-cover bg-center"
+             style="background-image: url('{{ $guestBgImage }}'); transform: translate3d(0, 0, 0); will-change: transform; backface-visibility: hidden;">
+        </div>
+        <div class="fixed inset-0 bg-slate-950/60 dark:bg-slate-950/75 pointer-events-none z-0"
+             style="transform: translate3d(0, 0, 0); backface-visibility: hidden;">
+        </div>
+    @endif
+
+    <!-- Grid Lines Pattern (Sesuai Garis-Garis Layout, GPU-Composited) -->
+    @if($isHomeOrGuest && $guestBgPattern)
+        <div class="fixed inset-0 pointer-events-none z-0"
+             style="background-image: linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 32px 32px; transform: translate3d(0, 0, 0); backface-visibility: hidden;">
+        </div>
+    @endif
+
+    <!-- Ambient Background Lighting with Slow Pulse (Hardware-Accelerated) -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden {{ $isHomeOrGuest && $guestBgType === 'image' ? 'opacity-40' : '' }}"
+         style="transform: translate3d(0, 0, 0); will-change: transform; backface-visibility: hidden; contain: strict;">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-slow" style="transform: translate3d(0,0,0); will-change: transform, opacity;"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s; transform: translate3d(0,0,0); will-change: transform, opacity;"></div>
+        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s; transform: translate3d(0,0,0); will-change: transform, opacity;"></div>
     </div>
 
     <!-- Header / Navbar -->
@@ -410,36 +437,59 @@
                 });
             });
 
-            // Scroll listener: update the green pill according to which section is currently in view
-            function handleScroll() {
-                if (isManualScroll) return;
+            // Cache section offsets to prevent forced synchronous reflow (Layout Thrashing) during scroll
+            let sectionCache = [];
+            function updateSectionCache() {
+                sectionCache = sections.map(sec => ({
+                    id: sec.id,
+                    top: sec.offsetTop,
+                    height: sec.offsetHeight
+                }));
+            }
+            updateSectionCache();
+            window.addEventListener('resize', updateSectionCache, { passive: true });
 
-                const scrollY = window.pageYOffset;
+            // High-performance ScrollSpy throttled with requestAnimationFrame (60/120fps smooth)
+            let isScrollTicking = false;
+            function handleScroll() {
+                if (isManualScroll || sectionCache.length === 0) return;
+
+                const scrollY = window.pageYOffset || document.documentElement.scrollTop;
                 const headerOffset = 130;
                 let currentSectionId = 'hero';
 
-                for (let i = 0; i < sections.length; i++) {
-                    const section = sections[i];
-                    const top = section.offsetTop - headerOffset;
-                    const height = section.offsetHeight;
+                for (let i = 0; i < sectionCache.length; i++) {
+                    const item = sectionCache[i];
+                    const top = item.top - headerOffset;
+                    const height = item.height;
 
                     if (scrollY >= top && scrollY < top + height) {
-                        currentSectionId = section.id;
+                        currentSectionId = item.id;
                         break;
                     }
                 }
 
                 // If scrolled near bottom of page, highlight the last section (e.g. FAQ)
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 80) {
-                    if (sections.length > 0) {
-                        currentSectionId = sections[sections.length - 1].id;
+                const docHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+                if ((window.innerHeight + scrollY) >= docHeight - 80) {
+                    if (sectionCache.length > 0) {
+                        currentSectionId = sectionCache[sectionCache.length - 1].id;
                     }
                 }
 
                 setActive(currentSectionId);
             }
 
-            window.addEventListener('scroll', handleScroll, { passive: true });
+            window.addEventListener('scroll', () => {
+                if (!isScrollTicking) {
+                    window.requestAnimationFrame(() => {
+                        handleScroll();
+                        isScrollTicking = false;
+                    });
+                    isScrollTicking = true;
+                }
+            }, { passive: true });
+
             handleScroll(); // Trigger immediately on initial load
         });
     </script>

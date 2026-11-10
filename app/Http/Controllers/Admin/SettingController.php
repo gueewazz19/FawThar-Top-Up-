@@ -23,6 +23,10 @@ class SettingController extends Controller
             'social_tiktok' => Setting::get('social_tiktok', 'https://tiktok.com'),
             'meta_description' => Setting::get('meta_description', 'Platform top up game online terpercaya di Indonesia.'),
             'maintenance_mode' => (bool) Setting::get('maintenance_mode', false),
+            'guest_bg_type' => Setting::get('guest_bg_type', 'default'),
+            'guest_bg_color' => Setting::get('guest_bg_color', '#080C14'),
+            'guest_bg_image' => Setting::get('guest_bg_image', ''),
+            'guest_bg_pattern' => (bool) Setting::get('guest_bg_pattern', true),
         ];
 
         return view('admin.settings.index', compact('settings'));
@@ -43,6 +47,11 @@ class SettingController extends Controller
             'social_tiktok' => 'nullable|url|max:255',
             'meta_description' => 'nullable|string|max:500',
             'maintenance_mode' => 'sometimes|boolean',
+            'guest_bg_type' => 'sometimes|in:default,color,image',
+            'guest_bg_color' => 'nullable|string|max:30',
+            'guest_bg_image_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'remove_guest_bg_image' => 'nullable|boolean',
+            'guest_bg_pattern' => 'sometimes|boolean',
         ]);
 
         Setting::set('site_name', $validated['site_name'], 'string', 'general');
@@ -61,6 +70,38 @@ class SettingController extends Controller
         } elseif ($request->filled('site_logo')) {
             Setting::set('site_logo', $request->input('site_logo'), 'string', 'general');
         }
+
+        // Guest Background Handling
+        $guestBgType = $request->input('guest_bg_type', 'default');
+        $guestBgColor = $request->input('guest_bg_color') ?: Setting::get('guest_bg_color', '#080C14');
+        Setting::set('guest_bg_type', $guestBgType, 'string', 'appearance');
+        Setting::set('guest_bg_color', $guestBgColor, 'string', 'appearance');
+        Setting::set('guest_bg_pattern', $request->has('guest_bg_pattern') ? '1' : '0', 'boolean', 'appearance');
+
+        if ($request->boolean('remove_guest_bg_image')) {
+            $currentBg = Setting::get('guest_bg_image');
+            if ($currentBg && file_exists(public_path($currentBg))) {
+                @unlink(public_path($currentBg));
+            }
+            Setting::set('guest_bg_image', '', 'string', 'appearance');
+        } elseif ($request->hasFile('guest_bg_image_file') && $request->file('guest_bg_image_file')->isValid()) {
+            // Ensure uploads/backgrounds directory exists
+            $bgDir = public_path('uploads/backgrounds');
+            if (!file_exists($bgDir)) {
+                @mkdir($bgDir, 0755, true);
+            }
+
+            $currentBg = Setting::get('guest_bg_image');
+            if ($currentBg && file_exists(public_path($currentBg))) {
+                @unlink(public_path($currentBg));
+            }
+
+            $bgFile = $request->file('guest_bg_image_file');
+            $bgFilename = 'bg_' . time() . '_' . uniqid() . '.' . $bgFile->getClientOriginalExtension();
+            $bgFile->move($bgDir, $bgFilename);
+            Setting::set('guest_bg_image', '/uploads/backgrounds/' . $bgFilename, 'string', 'appearance');
+        }
+
         Setting::set('site_tagline', $validated['site_tagline'], 'string', 'general');
         Setting::set('support_email', $validated['support_email'], 'string', 'contact');
         Setting::set('support_whatsapp', $validated['support_whatsapp'], 'string', 'contact');
@@ -74,12 +115,12 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_id' => auth()->id(),
             'action' => 'ADMIN_UPDATE_SETTINGS',
-            'description' => 'Admin memperbarui konfigurasi sistem, branding & media sosial',
+            'description' => 'Admin memperbarui konfigurasi sistem, background tampilan, branding & media sosial',
             'new_values' => $validated,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
 
-        return redirect()->route('admin.settings.index')->with('success', 'Pengaturan situs, logo, kontak & media sosial berhasil disimpan.');
+        return redirect()->route('admin.settings.index')->with('success', 'Pengaturan situs, background tampilan, kontak & branding berhasil disimpan.');
     }
 }

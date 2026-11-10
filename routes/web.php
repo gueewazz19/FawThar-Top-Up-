@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ActivityLogController as AdminActivityLogController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FAQController as AdminFAQController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -19,8 +20,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/topup/{slug}', [TopUpController::class, 'show'])->name('topup.show');
-Route::post('/topup/{slug}/order', [TopUpController::class, 'checkout'])->middleware('throttle:30,1')->name('topup.checkout');
 Route::get('/order/{order_number}', [TopUpController::class, 'invoice'])->name('topup.invoice');
 Route::post('/order/{order_number}/simulate-pay', [TopUpController::class, 'simulatePay'])->name('topup.simulate_pay');
 Route::get('/locale/{lang}', [\App\Http\Controllers\LocaleController::class, 'switch'])->name('locale.switch');
@@ -40,18 +39,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.submit');
 
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register/send-otp', [RegisterController::class, 'sendOtp'])->name('register.send_otp');
-    Route::post('/register/verify-otp', [RegisterController::class, 'verifyOtp'])->name('register.verify_otp');
-    Route::post('/register/complete', [RegisterController::class, 'completeRegistration'])->name('register.complete');
     Route::post('/register', [RegisterController::class, 'register'])->middleware('throttle:register')->name('register.submit');
 
-    // Forgot & Reset Password
+    // Forgot Password via Email OTP
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendResetOtp'])->name('password.send_otp');
-    Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyResetOtp'])->name('password.verify_otp');
-    Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
-
+    Route::post('/forgot-password/email', [ForgotPasswordController::class, 'sendOtpEmail'])->name('password.email');
+    Route::get('/forgot-password/verify', [ForgotPasswordController::class, 'showVerifyForm'])->name('password.verify.form');
+    Route::post('/forgot-password/change-email', [ForgotPasswordController::class, 'changeEmailAndResendOtp'])->name('password.change_email');
+    Route::post('/forgot-password/reset', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
     // Official Google OAuth 2.0
     Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
@@ -63,10 +58,13 @@ use App\Http\Controllers\Customer\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated User Profile & Portal
+| Authenticated User Top Up, Profile & Portal
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    Route::get('/topup/{slug}', [TopUpController::class, 'show'])->name('topup.show');
+    Route::post('/topup/{slug}/order', [TopUpController::class, 'checkout'])->middleware('throttle:30,1')->name('topup.checkout');
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
@@ -88,13 +86,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Games Management
     Route::get('/games', [AdminGameController::class, 'index'])->name('games.index');
     Route::post('/games', [AdminGameController::class, 'store'])->name('games.store');
+    Route::put('/games/{game}', [AdminGameController::class, 'update'])->name('games.update');
     Route::post('/games/{game}/toggle', [AdminGameController::class, 'toggleStatus'])->name('games.toggle');
 
     // Products / Denominations Management
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
     Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+    Route::put('/products/{product}', [AdminProductController::class, 'update'])->name('products.update');
     Route::post('/products/{product}/toggle', [AdminProductController::class, 'toggleStatus'])->name('products.toggle');
     Route::delete('/products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+
+    // FAQs Management
+    Route::get('/faqs', [AdminFAQController::class, 'index'])->name('faqs.index');
+    Route::post('/faqs', [AdminFAQController::class, 'store'])->name('faqs.store');
+    Route::put('/faqs/{faq}', [AdminFAQController::class, 'update'])->name('faqs.update');
+    Route::post('/faqs/{faq}/toggle', [AdminFAQController::class, 'toggleStatus'])->name('faqs.toggle');
+    Route::delete('/faqs/{faq}', [AdminFAQController::class, 'destroy'])->name('faqs.destroy');
 
     // Orders Management & Fulfillment
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');

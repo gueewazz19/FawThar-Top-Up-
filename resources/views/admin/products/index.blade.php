@@ -117,6 +117,12 @@
                             </td>
                             <td class="py-4 px-6 text-right">
                                 <div class="flex items-center justify-end space-x-2">
+                                    <button type="button" onclick="openEditProductModal({{ json_encode($product) }})" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 border border-cyan-500/30 transition-colors flex items-center space-x-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        <span>Edit</span>
+                                    </button>
                                     <form method="POST" action="{{ route('admin.products.toggle', $product) }}">
                                         @csrf
                                         <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ $product->is_available ? 'bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 border border-emerald-500/30' }} transition-colors">
@@ -126,7 +132,7 @@
                                     <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('Hapus paket {{ $product->name }}?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors">
+                                        <button type="submit" class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors" title="Hapus Paket">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
@@ -222,4 +228,98 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Edit Paket -->
+<div id="editProductModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg p-6 bg-[#0E1524] border border-dark-border shadow-2xl relative">
+        <button type="button" onclick="document.getElementById('editProductModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <h3 class="text-xl font-bold text-white font-['Outfit'] mb-1">Edit Paket Top-Up</h3>
+        <p class="text-xs text-slate-400 mb-6">Ubah informasi nominal, harga jual, atau HPP modal paket ini.</p>
+
+        <form id="editProductForm" method="POST" action="" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="form-label text-xs">Pilih Game</label>
+                <select id="edit_product_game_id" name="game_id" required class="form-input text-sm w-full bg-[#0d1424]">
+                    @foreach($games as $g)
+                        <option value="{{ $g->id }}">{{ $g->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label text-xs">Nama Tampilan Paket</label>
+                    <input type="text" id="edit_product_name" name="name" required class="form-input text-sm w-full">
+                </div>
+                <div>
+                    <label class="form-label text-xs">Nominal Currency</label>
+                    <input type="text" id="edit_product_currency_amount" name="currency_amount" required class="form-input text-sm w-full">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="form-label text-xs">Harga Jual (Rp)</label>
+                    <input type="number" id="edit_product_price" name="price" required min="100" class="form-input text-sm w-full">
+                </div>
+                <div>
+                    <label class="form-label text-xs">Modal / HPP (Rp)</label>
+                    <input type="number" id="edit_product_cost" name="cost" required min="0" class="form-input text-sm w-full">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 items-center pt-2">
+                <div>
+                    <label class="form-label text-xs">Urutan Tampil (Sort Order)</label>
+                    <input type="number" id="edit_product_sort_order" name="sort_order" class="form-input text-sm w-full">
+                </div>
+                <div class="pt-5 space-y-2">
+                    <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="edit_product_is_popular" name="is_popular" value="1" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500">
+                        <span>Tandai Populer</span>
+                    </label>
+                    <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="edit_product_is_available" name="is_available" value="1" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500">
+                        <span>Status Tersedia</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t border-dark-border">
+                <button type="button" onclick="document.getElementById('editProductModal').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm hover:bg-slate-700">
+                    Batal
+                </button>
+                <button type="submit" class="btn-primary text-sm">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditProductModal(product) {
+        const modal = document.getElementById('editProductModal');
+        const form = document.getElementById('editProductForm');
+
+        form.action = `/admin/products/${product.id}`;
+        document.getElementById('edit_product_game_id').value = product.game_id || '';
+        document.getElementById('edit_product_name').value = product.name || '';
+        document.getElementById('edit_product_currency_amount').value = product.currency_amount || '';
+        document.getElementById('edit_product_price').value = Math.round(product.price) || '';
+        document.getElementById('edit_product_cost').value = Math.round(product.cost) || 0;
+        document.getElementById('edit_product_sort_order').value = product.sort_order ?? 10;
+        document.getElementById('edit_product_is_popular').checked = Boolean(product.is_popular);
+        document.getElementById('edit_product_is_available').checked = Boolean(product.is_available);
+
+        modal.classList.remove('hidden');
+    }
+</script>
 @endsection

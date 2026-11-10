@@ -69,6 +69,46 @@ class ProductController extends Controller
             ->with('success', "Paket {$product->name} berhasil ditambahkan!");
     }
 
+    public function update(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'game_id' => 'required|exists:games,id',
+            'name' => 'required|string|max:100',
+            'currency_amount' => 'required|string|max:50',
+            'price' => 'required|numeric|min:100',
+            'cost' => 'required|numeric|min:0',
+            'sort_order' => 'nullable|integer',
+            'is_popular' => 'sometimes|boolean',
+            'is_available' => 'sometimes|boolean',
+        ]);
+
+        $oldValues = $product->toArray();
+
+        $product->update([
+            'game_id' => $validated['game_id'],
+            'name' => $validated['name'],
+            'currency_amount' => $validated['currency_amount'],
+            'price' => $validated['price'],
+            'cost' => $validated['cost'],
+            'sort_order' => $validated['sort_order'] ?? 99,
+            'is_popular' => $request->has('is_popular'),
+            'is_available' => $request->has('is_available'),
+        ]);
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'ADMIN_UPDATE_PRODUCT',
+            'description' => "Admin memperbarui paket: {$product->name} (Rp " . number_format($product->price, 0) . ")",
+            'old_values' => $oldValues,
+            'new_values' => $product->toArray(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->route('admin.products.index', ['game_id' => $product->game_id])
+            ->with('success', "Paket {$product->name} berhasil diperbarui!");
+    }
+
     public function toggleStatus(Request $request, Product $product)
     {
         $old = $product->is_available;

@@ -73,9 +73,13 @@
                         <tr class="hover:bg-slate-800/40 transition-colors">
                             <td class="py-4 px-6">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-black text-sm">
-                                        {{ strtoupper(substr($game->name, 0, 2)) }}
-                                    </div>
+                                    @if($game->logo)
+                                        <img src="{{ $game->logo }}" alt="{{ $game->name }}" class="w-11 h-11 rounded-xl object-cover border border-cyan-500/30 flex-shrink-0 bg-slate-900 shadow">
+                                    @else
+                                        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-black text-sm flex-shrink-0">
+                                            {{ strtoupper(substr($game->name, 0, 2)) }}
+                                        </div>
+                                    @endif
                                     <div>
                                         <div class="font-bold text-white">{{ $game->name }}</div>
                                         <div class="text-xs text-slate-500">/game/{{ $game->slug }}</div>
@@ -122,14 +126,20 @@
                             </td>
                             <td class="py-4 px-6 text-right">
                                 <div class="flex items-center justify-end space-x-2">
+                                    <button type="button" onclick="openEditGameModal({{ json_encode($game) }})" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 border border-cyan-500/30 transition-colors flex items-center space-x-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        <span>Edit</span>
+                                    </button>
                                     <form method="POST" action="{{ route('admin.games.toggle', $game) }}">
                                         @csrf
                                         <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold {{ $game->is_active ? 'bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 border border-emerald-500/30' }} transition-colors">
                                             {{ $game->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                         </button>
                                     </form>
-                                    <a href="{{ route('admin.products.index', ['game_id' => $game->id]) }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 border border-cyan-500/30 transition-colors">
-                                        Kelola Paket
+                                    <a href="{{ route('admin.products.index', ['game_id' => $game->id]) }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 border border-indigo-500/30 transition-colors">
+                                        Paket
                                     </a>
                                 </div>
                             </td>
@@ -164,7 +174,7 @@
         <h3 class="text-xl font-bold text-white font-['Outfit'] mb-1">Tambah Game Baru</h3>
         <p class="text-xs text-slate-400 mb-6">Lengkapi informasi konfigurasi game untuk ditampilkan di katalog.</p>
 
-        <form method="POST" action="{{ route('admin.games.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('admin.games.store') }}" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div>
                 <label class="form-label text-xs">Nama Game</label>
@@ -178,6 +188,12 @@
                         <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                     @endforeach
                 </select>
+            </div>
+
+            <div>
+                <label class="form-label text-xs">Foto / Cover Game (Maks 4MB)</label>
+                <input type="file" name="photo" accept="image/*" class="form-input text-xs w-full bg-[#0d1424] file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-500">
+                <p class="text-[11px] text-slate-500 mt-1">Format: JPG, PNG, WEBP. Foto ini akan tampil di katalog beranda dan halaman checkout.</p>
             </div>
 
             <div>
@@ -216,4 +232,138 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Edit Game -->
+<div id="editGameModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-lg p-6 bg-[#0E1524] border border-dark-border shadow-2xl relative">
+        <button type="button" onclick="document.getElementById('editGameModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <h3 class="text-xl font-bold text-white font-['Outfit'] mb-1">Edit Game</h3>
+        <p class="text-xs text-slate-400 mb-6">Ubah data game, foto cover, dan konfigurasi akun pelanggan.</p>
+
+        <form id="editGameForm" method="POST" action="" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label class="form-label text-xs">Nama Game</label>
+                <input type="text" id="edit_game_name" name="name" required class="form-input text-sm w-full">
+            </div>
+
+            <div>
+                <label class="form-label text-xs">Kategori Game</label>
+                <select id="edit_game_category_id" name="category_id" required class="form-input text-sm w-full bg-[#0d1424]">
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label text-xs">Foto / Cover Game Saat Ini & Ganti Baru</label>
+                <div class="flex items-center space-x-3 mb-2">
+                    <img id="edit_game_photo_preview" src="" alt="Cover" class="w-14 h-14 rounded-xl object-cover border border-slate-700 bg-slate-900 hidden">
+                    <div id="edit_game_photo_placeholder" class="w-14 h-14 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xs text-slate-500">
+                        No Foto
+                    </div>
+                    <div class="flex-grow">
+                        <input type="file" name="photo" accept="image/*" onchange="previewGamePhoto(this)" class="form-input text-xs w-full bg-[#0d1424] file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-600 file:text-white hover:file:bg-cyan-500">
+                        <p class="text-[11px] text-slate-500 mt-1">Unggah file gambar baru (JPG, PNG, WEBP) untuk mengganti foto yang tampil di guest.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="form-label text-xs">Deskripsi Singkat</label>
+                <textarea id="edit_game_description" name="description" rows="2" class="form-input text-sm w-full"></textarea>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-3">
+                <div class="text-xs font-bold text-slate-300 uppercase tracking-wider">Ketentuan Akun Pelanggan</div>
+                
+                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                    <input type="checkbox" id="edit_requires_user_id" name="requires_user_id" value="1" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500">
+                    <span>Wajib User ID</span>
+                </label>
+                <div>
+                    <input type="text" id="edit_user_id_label" name="user_id_label" placeholder="Label User ID (cth: Player ID / UID)" class="form-input text-xs w-full">
+                </div>
+
+                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer pt-2">
+                    <input type="checkbox" id="edit_requires_server_id" name="requires_server_id" value="1" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500">
+                    <span>Wajib Server / Zone ID</span>
+                </label>
+                <div>
+                    <input type="text" id="edit_server_id_label" name="server_id_label" placeholder="Label Server (cth: Server / Zone ID)" class="form-input text-xs w-full">
+                </div>
+            </div>
+
+            <div class="pt-1">
+                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                    <input type="checkbox" id="edit_game_is_active" name="is_active" value="1" class="rounded border-slate-700 text-brand-600 focus:ring-brand-500">
+                    <span>Status Aktif (Tampilkan di Katalog Tamu)</span>
+                </label>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t border-dark-border">
+                <button type="button" onclick="document.getElementById('editGameModal').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-sm hover:bg-slate-700">
+                    Batal
+                </button>
+                <button type="submit" class="btn-primary text-sm">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditGameModal(game) {
+        const modal = document.getElementById('editGameModal');
+        const form = document.getElementById('editGameForm');
+
+        form.action = `/admin/games/${game.id}`;
+        document.getElementById('edit_game_name').value = game.name || '';
+        document.getElementById('edit_game_category_id').value = game.category_id || '';
+        document.getElementById('edit_game_description').value = game.description || '';
+        document.getElementById('edit_requires_user_id').checked = Boolean(game.requires_user_id);
+        document.getElementById('edit_user_id_label').value = game.user_id_label || 'User ID';
+        document.getElementById('edit_requires_server_id').checked = Boolean(game.requires_server_id);
+        document.getElementById('edit_server_id_label').value = game.server_id_label || 'Zone ID';
+        document.getElementById('edit_game_is_active').checked = Boolean(game.is_active);
+
+        const previewImg = document.getElementById('edit_game_photo_preview');
+        const placeholder = document.getElementById('edit_game_photo_placeholder');
+
+        if (game.logo) {
+            previewImg.src = game.logo;
+            previewImg.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        } else {
+            previewImg.src = '';
+            previewImg.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function previewGamePhoto(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('edit_game_photo_preview');
+                const placeholder = document.getElementById('edit_game_photo_placeholder');
+                previewImg.src = e.target.result;
+                previewImg.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 @endsection

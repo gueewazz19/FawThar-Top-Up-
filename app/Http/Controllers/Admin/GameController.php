@@ -43,6 +43,7 @@ class GameController extends Controller
             'name' => 'required|string|max:100|unique:games,name',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string|max:500',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
             'user_id_label' => 'nullable|string|max:50',
             'server_id_label' => 'nullable|string|max:50',
             'requires_user_id' => 'sometimes|boolean',
@@ -50,13 +51,25 @@ class GameController extends Controller
         ]);
 
         $slug = Str::slug($validated['name']);
+        $logoUrl = null;
+
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            $gameDir = public_path('uploads/games');
+            if (!file_exists($gameDir)) {
+                mkdir($gameDir, 0755, true);
+            }
+            $file = $request->file('photo');
+            $filename = 'game_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($gameDir, $filename);
+            $logoUrl = '/uploads/games/' . $filename;
+        }
         
         $game = Game::create([
             'category_id' => $validated['category_id'],
             'name' => $validated['name'],
             'slug' => $slug,
             'description' => $validated['description'] ?? 'Top Up instan 24 jam.',
-            'logo' => null,
+            'logo' => $logoUrl,
             'banner' => null,
             'is_active' => true,
             'requires_user_id' => $request->has('requires_user_id'),
@@ -75,6 +88,62 @@ class GameController extends Controller
         ]);
 
         return redirect()->route('admin.games.index')->with('success', "Game {$game->name} berhasil ditambahkan!");
+    }
+
+    public function update(Request $request, Game $game)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100|unique:games,name,' . $game->id,
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string|max:500',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'user_id_label' => 'nullable|string|max:50',
+            'server_id_label' => 'nullable|string|max:50',
+            'requires_user_id' => 'sometimes|boolean',
+            'requires_server_id' => 'sometimes|boolean',
+            'is_active' => 'sometimes|boolean',
+        ]);
+
+        $oldValues = $game->toArray();
+
+        if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
+            if ($game->logo && str_starts_with($game->logo, '/uploads/games/') && file_exists(public_path($game->logo))) {
+                @unlink(public_path($game->logo));
+            }
+            $gameDir = public_path('uploads/games');
+            if (!file_exists($gameDir)) {
+                mkdir($gameDir, 0755, true);
+            }
+            $file = $request->file('photo');
+            $filename = 'game_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($gameDir, $filename);
+            $game->logo = '/uploads/games/' . $filename;
+        }
+
+        $game->category_id = $validated['category_id'];
+        $game->name = $validated['name'];
+        $game->slug = Str::slug($validated['name']);
+        $game->description = $validated['description'] ?? $game->description;
+        $game->requires_user_id = $request->has('requires_user_id');
+        $game->requires_server_id = $request->has('requires_server_id');
+        $game->user_id_label = $validated['user_id_label'] ?? ($game->requires_user_id ? 'User ID' : null);
+        $game->server_id_label = $validated['server_id_label'] ?? ($game->requires_server_id ? 'Zone ID' : null);
+        if ($request->has('is_active')) {
+            $game->is_active = $request->boolean('is_active');
+        }
+        $game->save();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'ADMIN_UPDATE_GAME',
+            'description' => "Admin memperbarui data game: {$game->name}",
+            'old_values' => $oldValues,
+            'new_values' => $game->toArray(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
+        return redirect()->route('admin.games.index')->with('success', "Game {$game->name} berhasil diperbarui!");
     }
 
     public function toggleStatus(Request $request, Game $game)

@@ -40,6 +40,175 @@
 
     <!-- Scripts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Custom CSS for Auth since Tailwind JIT might not be running -->
+    <style>
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        html.dark .glass-card {
+            background-color: rgba(18, 24, 38, 0.85); /* #121826 with 85% opacity */
+        }
+        .glass-input {
+            background-color: #ffffff !important;
+            padding-left: 2.75rem !important; /* 44px so text never collides with icon */
+            position: relative;
+            z-index: 1;
+            color: #0f172a !important;
+            font-size: 0.8125rem !important; /* 13px: agak kecil dikit */
+            font-weight: 600 !important; /* di bold */
+            letter-spacing: 0.01em;
+        }
+        .glass-input::placeholder {
+            font-size: 0.8125rem !important;
+            font-weight: 600 !important;
+            color: #94a3b8 !important;
+            opacity: 1 !important;
+        }
+        html.dark .glass-input::placeholder {
+            color: #64748b !important;
+        }
+        html.dark .glass-input {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        /* Override browser autofill (Chrome/Edge blue/yellow background) */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+            box-shadow: 0 0 0 1000px #ffffff inset !important;
+            -webkit-text-fill-color: #0f172a !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        html.dark input:-webkit-autofill,
+        html.dark input:-webkit-autofill:hover, 
+        html.dark input:-webkit-autofill:focus, 
+        html.dark input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
+            box-shadow: 0 0 0 1000px #0f172a inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+        .text-brand {
+            color: #6366f1 !important;
+        }
+        .text-brand:hover {
+            color: #4f46e5 !important;
+        }
+        html.dark .text-brand {
+            color: #818cf8 !important;
+        }
+        .bg-brand {
+            background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%) !important;
+            color: #ffffff !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px -2px rgba(79, 70, 229, 0.4) !important;
+        }
+        .bg-brand:hover {
+            background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 6px 22px rgba(79, 70, 229, 0.5) !important;
+        }
+        .border-brand {
+            border-color: #6366f1 !important;
+        }
+        .ring-brand:focus {
+            --tw-ring-color: rgba(99, 102, 241, 0.2) !important;
+            --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+            --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+            box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+            border-color: #6366f1 !important;
+        }
+        /* Royal Indigo / Ungu Button matching Guest Primary Button */
+        .btn-auth-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            color: #ffffff !important;
+            background: linear-gradient(180deg, #4f46e5 0%, #4338ca 100%) !important;
+            border: 1px solid rgba(165, 180, 252, 0.35) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 4px 14px -2px rgba(79, 70, 229, 0.4) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            overflow: hidden;
+        }
+        .btn-auth-primary:hover {
+            background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 6px 22px rgba(79, 70, 229, 0.5) !important;
+            transform: translateY(-1px);
+        }
+        .btn-auth-primary:active {
+            transform: translateY(1px) scale(0.99);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(79, 70, 229, 0.35) !important;
+        }
+        html.dark .btn-auth-primary {
+            background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%) !important;
+            border-color: rgba(199, 210, 254, 0.3) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 20px rgba(99, 102, 241, 0.45) !important;
+        }
+        html.dark .btn-auth-primary:hover {
+            background: linear-gradient(180deg, #818cf8 0%, #6366f1 100%) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 6px 28px rgba(99, 102, 241, 0.6) !important;
+        }
+        /* Reliable, High-Contrast Icon Wrapper */
+        .input-wrapper {
+            position: relative;
+            display: block;
+        }
+        .input-icon-wrapper {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 2.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 10 !important;
+            color: #64748b; /* crisp slate-500 in light mode */
+            transition: color 0.2s ease-in-out;
+        }
+        html.dark .input-icon-wrapper {
+            color: #94a3b8; /* clear slate-400 in dark mode */
+        }
+        .input-wrapper:focus-within .input-icon-wrapper {
+            color: #6366f1 !important;
+        }
+        .input-icon-wrapper svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            display: block;
+        }
+        .password-toggle-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            z-index: 10 !important;
+        }
+        /* Hide Microsoft Edge / IE native eye icon to prevent duplicate eye buttons */
+        input::-ms-reveal,
+        input::-ms-clear,
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-[#080C14] dark:text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-slate-950 relative transition-colors duration-200">
     <!-- Ambient Background Glow -->
@@ -101,74 +270,10 @@
 
     <!-- Main Content Container with Split Layout -->
     <main class="flex-grow flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-10">
-        <div class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div class="w-full flex items-center justify-center">
             
-            <!-- Left Column: Marketplace Gaming Showcase Banner -->
-            <div class="hidden lg:flex lg:col-span-6 flex-col justify-center space-y-6 pr-4">
-                <div class="space-y-3">
-                    <span class="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30">
-                        <span>✨ Platform Top Up Game #1 Indonesia</span>
-                    </span>
-                    <h1 class="text-3xl xl:text-4xl font-black text-slate-900 dark:text-white font-['Outfit'] leading-tight">
-                        Beli Voucher Game Favoritmu dengan <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">Harga Termurah</span> & Pengiriman Instan!
-                    </h1>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                        Nikmati kemudahan transaksi top up game 24 jam nonstop dengan sistem otomatis tercanggih dan perlindungan akun maksimal.
-                    </p>
-                </div>
-
-                <!-- 3 Key Value Propositions -->
-                <div class="grid grid-cols-1 gap-3.5 pt-2">
-                    <div class="flex items-center space-x-3.5 p-3.5 rounded-2xl bg-white/70 dark:bg-dark-surface/50 border border-slate-200 dark:border-dark-border shadow-sm">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center font-bold flex-shrink-0">
-                            ⚡
-                        </div>
-                        <div>
-                            <div class="text-sm font-bold text-slate-900 dark:text-white">Pengisian Kilat 1-3 Detik</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">Pesanan diproses otomatis via server direct API tanpa delay</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center space-x-3.5 p-3.5 rounded-2xl bg-white/70 dark:bg-dark-surface/50 border border-slate-200 dark:border-dark-border shadow-sm">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center font-bold flex-shrink-0">
-                            🛡️
-                        </div>
-                        <div>
-                            <div class="text-sm font-bold text-slate-900 dark:text-white">100% Legal & Bergaransi</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">Semua voucher resmi bersumber dari publisher game</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center space-x-3.5 p-3.5 rounded-2xl bg-white/70 dark:bg-dark-surface/50 border border-slate-200 dark:border-dark-border shadow-sm">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center font-bold flex-shrink-0">
-                            💳
-                        </div>
-                        <div>
-                            <div class="text-sm font-bold text-slate-900 dark:text-white">Metode Pembayaran Lengkap</div>
-                            <div class="text-xs text-slate-500 dark:text-slate-400">QRIS, BCA, Mandiri, BRI, BNI, GoPay, OVO, Dana & ShopeePay</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trusted By Gamers Badge Bar -->
-                <div class="pt-2 flex items-center space-x-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    <span class="flex items-center space-x-1">
-                        <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                        <span>256-bit SSL Protection</span>
-                    </span>
-                    <span class="flex items-center space-x-1">
-                        <svg class="w-4 h-4 text-cyan-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                        <span>Automated Fulfillment</span>
-                    </span>
-                </div>
-            </div>
-
             <!-- Right Column: Interactive Auth Form Card -->
-            <div class="lg:col-span-6 w-full max-w-lg mx-auto">
+            <div class="w-full max-w-md mx-auto">
                 <!-- Flash Notification Error -->
                 @if(session('error'))
                     <div class="bg-rose-50 dark:bg-rose-950/80 border border-rose-300 dark:border-rose-500/40 text-rose-800 dark:text-rose-200 px-4 py-3 rounded-xl flex items-center space-x-3 shadow-lg mb-4 text-sm">
@@ -220,6 +325,25 @@
                 localStorage.theme = 'dark';
             }
         });
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const icon = btn.querySelector('.eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (icon) {
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />';
+                }
+                btn.title = 'Sembunyikan sandi';
+            } else {
+                input.type = 'password';
+                if (icon) {
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+                }
+                btn.title = 'Tampilkan sandi';
+            }
+        }
     </script>
 </body>
 </html>
